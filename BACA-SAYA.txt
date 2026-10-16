@@ -24,3 +24,15 @@ Mengubah animasi
 - Section "Designed for Every Space": warna dan jumlah tombol (1–4 gang) bisa dikombinasikan bebas;
   pilihan pengunjung juga dipakai di deretan 5 warna.
 - Warna finishing ada di js/switch3d.js → FINISH.
+
+Halaman produk (baru)
+- simon-i7.html, simon-m7.html, simon-m3.html — dibuka dari kartu Lineup di halaman utama
+  (tombol "Explore Simon …"), atau langsung dibuka dengan klik dua kali.
+- Isi tiap halaman: hero 3D · tur fitur interaktif (scroll atau klik angka di produk) ·
+  galeri · konfigurator (warna, jumlah tombol, material M7) · daftar produk + kode dari datasheet ·
+  spesifikasi teknis · link ke seri lain.
+- js/series3d.js : model 3D Simon M7 (Gem/Metal/Air, indikator dua warna) dan Simon M3
+  (panel besar, indikator 0.9 mm, toggle J-type 4.5°, kontak silver alloy).
+- js/product.js  : interaksi halaman produk.
+- Teks fitur, warna, kode produk dan spesifikasi berasal dari katalog Simon V.26.9;
+  semuanya ada di dalam file HTML masing-masing (mudah diedit).

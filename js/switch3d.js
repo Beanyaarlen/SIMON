@@ -588,5 +588,8 @@
     }
   }
 
-  global.Switch3D = { SwitchModel, makeEnvironment, FINISH, LAYOUT, OUTER, PITCH, A };
+  global.Switch3D = {
+    SwitchModel, makeEnvironment, FINISH, LAYOUT, OUTER, PITCH, A,
+    helpers: { rrect, keyGeometry, frameGeometry, resources, makeMaterials, makeLed, glyphTexture },
+  };
 })(window);
