@@ -1,0 +1,26 @@
+SIMON i7 — Website Animasi Produk (PT. Klik Hiro Optima)
+=========================================================
+
+Cara membuka
+- Klik dua kali index.html (Chrome / Edge / Firefox). Tidak perlu internet atau server.
+- Untuk upload ke hosting / WordPress: upload seluruh folder ini apa adanya
+  (index.html + folder css, js, assets).
+
+Struktur
+- index.html            : isi & teks semua section
+- css/style.css         : tampilan (font Archivo sudah tertanam di dalam file ini)
+- js/switch3d.js        : model 3D Simon i7 (frame, tombol, LED, modul dimmer/tirai/AC, layer exploded)
+- js/main.js            : koreografi scroll (posisi switch per section), interaksi klik tombol
+- js/vendor/            : three.js r160, GSAP 3.12, Lenis (smooth scroll) — semua lokal
+- assets/img/           : foto & logo dari Katalog KHO V.26.9 dan Katalog Simon
+
+Mengubah animasi
+- Posisi/rotasi/ukuran switch per section ada di js/main.js, fungsi buildKeyframes().
+  Contoh: K('hello', 0, { x: -0.4, y: 0, s: 1.15, ry: 26 })
+  x/y = posisi layar (-1 kiri/bawah … 1 kanan/atas), s = skala, rx/ry/rz = rotasi (derajat),
+  explode = 0..1 (urai layer), modules = 1..4 (panjang frame), lineup = 0..1 (5 warna berjajar).
+- Posisi & ukuran switch mengikuti area kosong ".slot" di tiap section (index.html + css/style.css),
+  jadi otomatis menyesuaikan HP, iPad dan laptop. Untuk menggeser switch, ubah ukuran/posisi .slot di CSS.
+- Section "Designed for Every Space": warna dan jumlah tombol (1–4 gang) bisa dikombinasikan bebas;
+  pilihan pengunjung juga dipakai di deretan 5 warna.
+- Warna finishing ada di js/switch3d.js → FINISH.

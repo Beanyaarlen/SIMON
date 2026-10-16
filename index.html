@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simon i7 — The Innovative Switches | PT. Klik Hiro Optima</title>
+<meta name="description" content="Simon i7 Push Button switches by PT. Klik Hiro Optima — elegant flat design, premium push-button feel, five finishes, one consistent design language.">
+<meta name="theme-color" content="#050506">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ LOADER ============ -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <img src="assets/img/logo-kho.png" alt="" class="loader-kho">
+    <div class="loader-bar"><span></span></div>
+    <div class="loader-meta"><span>Switch Design &amp; Smart Home</span><span class="loader-pct">0%</span></div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <a href="#hero" class="nav-logo" aria-label="PT. Klik Hiro Optima — home"><img src="assets/img/logo-kho.png" alt="PT. Klik Hiro Optima"></a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#hello">Push Button</a>
+    <a href="#anatomy">Inside</a>
+    <a href="#language">Design</a>
+    <a href="#space">Finishes</a>
+    <a href="#upgrade">Upgrade</a>
+    <a href="#lineup">Lineup</a>
+    <a href="#showroom">Showroom</a>
+  </nav>
+  <img class="nav-simon" src="assets/img/logo-simon.png" alt="Simon">
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+<div class="progress" aria-hidden="true"><span></span></div>
+
+<!-- 3D stage + projected labels -->
+<canvas id="gl" aria-hidden="true"></canvas>
+<img id="glFallback" src="assets/img/hero-switch.png" alt="Simon i7 4-gang push button switch, Dark Grey" hidden>
+<div id="overlay" aria-hidden="true">
+  <svg id="helloArrow" width="100%" height="100%"><path class="shaft" d=""/><path class="head" d=""/></svg>
+  <div id="partLabels"></div>
+  <div id="modLabels"></div>
+  <div id="colorLabels"></div>
+  <div id="ring">
+    <svg viewBox="-100 -100 200 200" class="ring-clock"><g class="ticks"></g><circle r="92" class="ring-track"/><circle r="92" class="ring-arc"/></svg>
+    <span class="chip c-time c1">06:30 · ON</span>
+    <span class="chip c-time c2">23:00 · OFF</span>
+    <span class="chip c-smart s1">App control</span>
+    <span class="chip c-smart s2">Voice control</span>
+    <span class="chip c-smart s3">Scene setup</span>
+    <span class="chip c-smart s4">2-way control</span>
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- ============ 1. HERO ============ -->
+  <section id="hero" class="sec hero" data-sec="hero">
+    <div class="bg"><img src="assets/img/bg-ribbon.jpg" alt=""></div>
+    <div class="hero-badge"><img src="assets/img/badge-spain.png" alt="Brand of Spain"></div>
+    <div class="slot" data-slot="hero"></div>
+    <div class="hero-copy">
+      <p class="eyebrow intro-up">Simon i7 · Push Button Switch</p>
+      <h1 class="hero-title">
+        <span class="line"><span class="display intro-up">The Innovative</span></span>
+        <span class="line"><span class="wide intro-up">Switches Design</span></span>
+      </h1>
+    </div>
+    <div class="hero-foot intro-up">
+      <span>V.26.9</span>
+      <span class="scroll-hint"><i></i>Scroll to explore</span>
+      <span class="tap-hint">Tap a key to switch it</span>
+    </div>
+  </section>
+
+  <!-- ============ 2. HELLO PUSH BUTTON ============ -->
+  <section id="hello" class="pin" data-sec="hello" style="--h:230">
+    <div class="stick">
+      <div class="bg dim"><img src="assets/img/bg-wave.jpg" alt=""></div>
+      <div class="hello-wrap">
+        <div class="slot" data-slot="hello"></div>
+        <div class="hello-side">
+          <h2 class="display step-in" data-in="0.02">The Innovative<br>Switches</h2>
+          <div class="tt-row step-in" data-in="0.18">
+            <figure class="tiktok">
+              <img src="assets/img/tiktok.png" alt="Conventional TikTok rocker switch">
+              <figcaption>TikTok</figcaption>
+            </figure>
+          </div>
+        </div>
+        <p class="hello-line step-in" data-in="0.5">Hello, <b>Push Button</b> switch!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. ANATOMY / EXPLODED ============ -->
+  <section id="anatomy" class="pin" data-sec="anatomy" style="--h:560">
+    <div class="stick">
+      <div class="bg anatomy-bg"><img class="flat-img" src="assets/img/flat-surface.jpg" alt=""></div>
+      <div class="steps" data-steps="0,0.5,0.74">
+        <article class="step">
+          <p class="eyebrow">Inside the i7</p>
+          <h2 class="display">Precision in<br>every layer</h2>
+          <p class="body">Keys, frame, LED indicators and mechanism — engineered to come together as one slim, seamless unit on your wall.</p>
+        </article>
+        <article class="step">
+          <p class="eyebrow">Flat Surface Design</p>
+          <h2 class="display">Flush.<br>Flat. Seamless.</h2>
+          <p class="body">A seamless flat surface that merges effortlessly into modern spaces.</p>
+        </article>
+        <article class="step">
+          <p class="eyebrow">Precision Push-Button Response</p>
+          <h2 class="display">Press it.</h2>
+          <p class="body">Push-button technology that offers a precise tactile feel for a truly premium experience.</p>
+          <p class="hint"><i></i>Click any key — the LED follows.</p>
+        </article>
+      </div>
+      <div class="slot" data-slot="anatomy"></div>
+      <p class="legend" aria-hidden="true">01 Keys · 02 Frame · 03 LED board · 04 Plate · 05 Mechanism · 06 Box</p>
+      <div class="step-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <!-- ============ 4. COMPLETE DESIGN LANGUAGE ============ -->
+  <section id="language" class="pin" data-sec="language" style="--h:500">
+    <div class="stick">
+      <div class="bg dim"><img src="assets/img/bg-ribbon2.jpg" alt=""></div>
+      <div class="lang-layout">
+        <header class="lang-head step-in" data-in="0.0">
+          <p class="eyebrow">More than a switch</p>
+          <h2 class="display">Complete Design<br>Language</h2>
+          <p class="body center">Every detail matters, <b>including the controls on your wall</b></p>
+        </header>
+        <div class="slot" data-slot="language"></div>
+        <footer class="lang-foot step-in" data-in="0.8">
+          <p class="motto">One Design <i>.</i> One Frame <i>.</i> One Consistent Experience</p>
+          <p class="body center">Mix and combine switches, sockets, USB chargers, curtain controls and thermostats within a single elegant frame.</p>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. CONTROL ANYTHING (photo) ============ -->
+  <section id="control" class="sec photo-break" data-sec="control">
+    <div class="pb-media"><img src="assets/img/hand-panel.jpg" alt="Hand swiping a Simon i7 dimmer on a multi-module panel with curtain control and AC thermostat"></div>
+    <div class="pb-copy reveal">
+      <p class="eyebrow">Simon i7 Smart</p>
+      <h2 class="display">Control<br>Anything</h2>
+      <p class="body">Switch <span>+</span> Dimmer Swipe <span>+</span> Curtain Control <span>+</span> AC Control</p>
+    </div>
+  </section>
+
+  <!-- ============ 6. THE NEXT REVOLUTION ============ -->
+  <section id="revolution" class="pin" data-sec="revolution" style="--h:240">
+    <div class="stick">
+      <div class="bg dim"><img src="assets/img/bg-wave2.jpg" alt=""></div>
+      <div class="rev-layout">
+        <header class="rev-head step-in" data-in="0.0">
+          <p class="eyebrow">A new era begins</p>
+          <h2 class="display">The Next Revolution</h2>
+        </header>
+        <div class="rev-row rev-old step-in" data-in="0.2">
+          <div class="rev-text">
+            <h3><b>TikTok</b> Switch</h3>
+            <ul class="list-x"><li>Basic ON/OFF</li><li>Limited functionality</li><li>Mismatch ON/OFF position</li><li>Difficult to upgrade</li></ul>
+          </div>
+          <div class="rev-imgbox"><img class="rev-img" src="assets/img/tiktok.png" alt="TikTok rocker switch"></div>
+        </div>
+        <div class="rev-line step-in" data-in="0.38"></div>
+        <div class="rev-row rev-new step-in" data-in="0.48">
+          <div class="slot" data-slot="revolution"></div>
+          <div class="rev-text">
+            <h3><b>Push Button</b> Switch</h3>
+            <ul class="list-v"><li>Elegant flat design</li><li>Premium push-button feel</li><li>Unlimited functionality</li><li>Timer &amp; scheduling</li><li>Easy to upgrade</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. DESIGNED FOR EVERY SPACE ============ -->
+  <section id="space" class="pin" data-sec="space" style="--h:330">
+    <div class="stick">
+      <div class="bg dim"><img src="assets/img/bg-ribbon.jpg" alt=""></div>
+      <div class="tint" aria-hidden="true"></div>
+      <div class="space-layout">
+      <div class="slot" data-slot="space"></div>
+      <div class="config">
+        <p class="eyebrow">Configure</p>
+        <h2 class="display">Designed for <br>Every Space</h2>
+        <p class="cfg-hint">Mix any finish with any configuration — tap to try.</p>
+        <div class="cfg-group">
+          <p class="cfg-label">Configurations</p>
+          <div class="chips" role="group" aria-label="Configurations">
+            <button class="chip-btn" data-gang="1">1 gang</button>
+            <button class="chip-btn" data-gang="2">2 gang</button>
+            <button class="chip-btn" data-gang="3">3 gang</button>
+            <button class="chip-btn" data-gang="4">4 gang</button>
+          </div>
+        </div>
+        <div class="cfg-group">
+          <p class="cfg-label">Colors <span class="cfg-name">Dark Grey</span></p>
+          <div class="swatches" role="group" aria-label="Colors">
+            <button class="sw" data-color="white" style="--c:#e9e9e7" aria-label="White"></button>
+            <button class="sw" data-color="champ" style="--c:#d8c6a1" aria-label="Champagne"></button>
+            <button class="sw" data-color="dgrey" style="--c:#5d5d5f" aria-label="Dark Grey"></button>
+            <button class="sw" data-color="black" style="--c:#262627" aria-label="Black Doff"></button>
+            <button class="sw" data-color="mocha" style="--c:#48433b" aria-label="Mocha"></button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="finale-layout">
+        <header class="finale-head">
+          <p class="eyebrow">Five finishes</p>
+          <h2 class="display">One switch.<br>Every space.</h2>
+        </header>
+        <div class="slot" data-slot="lineup"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. GALLERY ============ -->
+  <section id="gallery" class="sec gallery" data-sec="gallery">
+    <header class="gal-head reveal">
+      <p class="eyebrow">Every detail matters</p>
+      <h2 class="display">Including the controls<br>on your wall</h2>
+    </header>
+    <div class="gal-grid">
+      <figure class="g1 reveal"><div class="ph"><img src="assets/img/socket-combo.jpg" alt="Simon i7 4-gang switch combined with universal socket and USB charger" loading="lazy"></div><figcaption>Switches, sockets &amp; USB chargers — one frame</figcaption></figure>
+      <figure class="g2 reveal"><div class="ph"><img src="assets/img/marble-wall.jpg" alt="Simon i7 multi-module frame on a marble wall" loading="lazy"></div><figcaption>Multi-gang frames, endless combinations</figcaption></figure>
+      <figure class="g3 reveal"><div class="ph"><img src="assets/img/interior-1.jpg" alt="Modern dark interior" loading="lazy"></div><figcaption>Designed for every space</figcaption></figure>
+      <figure class="g4 reveal"><div class="ph"><img src="assets/img/concrete-wall.jpg" alt="Simon i7 switch on a concrete wall" loading="lazy"></div><figcaption>Start simple</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ============ 9. UPGRADE ANYTIME ============ -->
+  <section id="upgrade" class="pin" data-sec="upgrade" style="--h:460">
+    <div class="stick">
+      <div class="bg dim"><img src="assets/img/interior-2.jpg" alt=""></div>
+      <div class="up-layout">
+        <div class="up-top">
+          <header class="up-head">
+            <p class="eyebrow">Start simple</p>
+            <h2 class="display">Upgrade<br>Anytime</h2>
+          </header>
+          <p class="up-final"><b>Make the Innovation</b><span>for your home</span></p>
+        </div>
+        <div class="slot" data-slot="upgrade"></div>
+        <ol class="timeline" data-steps="0,0.34,0.62">
+          <li class="step"><span class="t">Today</span><p>Elegant flat design with a premium push-button feel. Light on, light off.</p></li>
+          <li class="step"><span class="t">Tomorrow</span><p>Timer &amp; scheduling — let the switch follow your routine.</p></li>
+          <li class="step"><span class="t">Future</span><p>Unlimited functionality: app control, voice control, scene setup and 2-way control.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. SIMON LINEUP ============ -->
+  <section id="lineup" class="pin" data-sec="lineup" style="--h:460">
+    <div class="stick">
+      <div class="track">
+        <article class="lu-intro">
+          <img src="assets/img/logo-simon.png" alt="Simon" class="lu-logo">
+          <p class="eyebrow">Since 1916 · Barcelona</p>
+          <h2 class="display">The Simon<br>Lineup</h2>
+          <p class="body">Luxury and modern series from the Simon catalog — available through PT. Klik Hiro Optima.</p>
+          <p class="lu-drag"><i></i>Keep scrolling</p>
+        </article>
+        <article class="card"><div class="ph"><img src="assets/img/series-i7.jpg" alt="Simon i7 multi-gang switches" loading="lazy"></div>
+          <p class="tag">Luxury Series</p><h3>Simon i7</h3><p class="tl">Elegant · Simple · Unique · Sophisticated</p>
+          <p class="meta">Multigang frames up to 5 gangs · White, Champagne, Mocha, Dark Grey, Black Doff</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/series-m7.jpg" alt="Simon M7 in a dark kitchen" loading="lazy"></div>
+          <p class="tag">Luxury Series</p><h3>Simon M7</h3><p class="tl">Selected Material · Slim Aesthetics · Smart Inspiration</p>
+          <p class="meta">M7 Gem (Glass) · M7 Metal · M7 Air (Polycarbonate)</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/series-m3.jpg" alt="Simon M3 switch in a bathroom" loading="lazy"></div>
+          <p class="tag">Modern Series</p><h3>Simon M3</h3><p class="tl">Boundless &amp; Fearless</p>
+          <p class="meta">Fearless &amp; frameless design</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/series-m1.jpg" alt="Simon M1 switch" loading="lazy"></div>
+          <p class="tag">Modern Series</p><h3>Simon M1</h3><p class="tl">Designed for living. Built for development.</p>
+          <p class="meta">Switches, sockets, control &amp; regulation</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/series-e6.jpg" alt="Simon E6 switch" loading="lazy"></div>
+          <p class="tag">Modern Series</p><h3>Simon E6</h3><p class="tl">Endless Freedom</p>
+          <p class="meta">Elegant · Luxury · Design</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/series-e3.jpg" alt="Simon E3 switch" loading="lazy"></div>
+          <p class="tag">Modern Series</p><h3>Simon E3</h3><p class="tl">Essential Design, Maximum Functionality</p>
+          <p class="meta">White, Silver, Champagne, Grey, Black</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/docking.jpg" alt="Simon Docking Family" loading="lazy"></div>
+          <p class="tag">Docking Family</p><h3>One Dock.</h3><p class="tl">Endless possibilities</p>
+          <p class="meta">Reading lamp kit · Wall light kit · Fully customized</p></article>
+        <article class="card"><div class="ph"><img src="assets/img/smart-home.jpg" alt="Homepad Pro Max smart home panel" loading="lazy"></div>
+          <p class="tag">Simple Smart Home</p><h3>Homepad Pro Max</h3><p class="tl">Simple installations · Simple to use · Simple budget</p>
+          <p class="meta">Zigbee · smart control · scenes</p></article>
+      </div>
+      <div class="lu-progress"><span></span></div>
+    </div>
+  </section>
+
+  <!-- ============ 11. CTA ============ -->
+  <section id="cta" class="sec cta" data-sec="cta">
+    <div class="bg dim"><img src="assets/img/bg-wave.jpg" alt=""></div>
+    <h2 class="cta-title reveal"><span class="display">Make the Innovation</span><span class="wide">for your home</span></h2>
+    <div class="cta-actions reveal">
+      <a class="btn btn-solid" href="#showroom">Visit a showroom</a>
+      <a class="btn btn-ghost" href="https://www.instagram.com/klikhirooptima" target="_blank" rel="noopener">Follow @klikhirooptima</a>
+    </div>
+  </section>
+
+  <!-- ============ 12. SHOWROOM ============ -->
+  <footer id="showroom" class="showroom" data-sec="showroom">
+    <div class="sr-top">
+      <img src="assets/img/logo-kho.png" alt="PT. Klik Hiro Optima — Switch Design &amp; Smart Home" class="sr-kho">
+      <img src="assets/img/logo-simon.png" alt="Simon" class="sr-simon">
+    </div>
+    <div class="sr-grid">
+      <div class="sr-office reveal">
+        <h3>Office</h3>
+        <p>Jl. Kwini 8 No. 10, Jakarta Pusat 10410</p>
+        <p><a href="tel:+62213811168">(021) 3811 168</a></p>
+        <p><a href="mailto:klikhirooptima@gmail.com">klikhirooptima@gmail.com</a></p>
+      </div>
+      <div class="sr-list">
+        <p class="eyebrow">Showroom</p>
+        <div class="sr-cards">
+          <div class="reveal"><h4>PIK 1</h4><p><b>Rukan Metro Broadway</b><br>9BE, PIK, Jakarta Utara 14460</p></div>
+          <div class="reveal"><h4>PIK 2</h4><p><b>Indonesia Design District,</b><br>Blok Market Place, Unit S7a<br>Jl. Rasuna Said PIK 2</p></div>
+          <div class="reveal"><h4>Alam Sutera</h4><p><b>Open Door</b> (Design and Lifestyle Centre)<br>The Flavor Bliss Lot 28-29 Unit 59<br>Jl. Alam Sutera Boulevard Kav 6, Serpong, Banten</p></div>
+          <div class="reveal"><h4>Green Lake</h4><p><b>Korean Town</b> Blok RCBB No. 33,<br>Green Lake City, Tangerang</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="sr-bottom">
+      <a href="https://switchdesignandsmarthome.com" target="_blank" rel="noopener">switchdesignandsmarthome.com</a>
+      <a href="https://www.instagram.com/klikhirooptima" target="_blank" rel="noopener">@klikhirooptima</a>
+      <span>© 2026 PT. Klik Hiro Optima. All rights reserved.</span>
+    </div>
+  </footer>
+</main>
+
+<script src="js/vendor/three.min.js"></script>
+<script src="js/vendor/gsap.min.js"></script>
+<script src="js/vendor/lenis.min.js"></script>
+<script src="js/switch3d.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
