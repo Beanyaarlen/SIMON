@@ -1,0 +1,54 @@
+/* =========================================================
+   Simon Homepad Pro Max (loads after product.css)
+   ========================================================= */
+.hp-try { position: relative; min-height: 100vh; box-sizing: border-box; display: flex; align-items: center; padding: calc(var(--nav-h) + 2vh) var(--gutter) 4vh; background: radial-gradient(70% 70% at 30% 55%, #141821, #050506 75%); }
+.hp-try-head .display { font-size: clamp(26px, min(3.4vw, 5.6vh), 56px); margin-bottom: 2vh; }
+.hp-try-grid { width: 100%; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 4vw; align-items: center; }
+.hp-try-grid .slot { height: 70vh; }
+.hp-side { position: relative; z-index: 6; }
+.room { position: relative; width: min(100%, 38vh); overflow: hidden; border-radius: 8px; aspect-ratio: 4 / 3; border: 1px solid var(--line); background: #0c0e12; transition: background 0.9s; }
+.room svg { display: block; width: 100%; height: 100%; padding: 4% 4% 13%; box-sizing: border-box; }
+.room .fl { fill: #12151b; transition: fill 0.9s; }
+.room .glow { opacity: 0; transition: opacity 0.9s var(--ease); }
+.room .furn { fill: none; stroke: #3b414c; stroke-width: 1.6; }
+.room .lamp { fill: #2a2e36; stroke: #4b525e; transition: fill 0.6s; }
+.room .walls { fill: none; stroke: #d9dde4; stroke-width: 5; stroke-linejoin: round; }
+.room .win { fill: #7fb4ff; opacity: 0.55; }
+.room .cur { fill: #8a7f73; transform-box: fill-box; transition: transform 1.3s var(--ease); }
+.room .cur-l { transform-origin: left center; } .room .cur-r { transform-origin: right center; }
+.room.curtain-open .cur { transform: scaleX(0.12); }
+.room .ac rect { fill: #1a1d23; stroke: #4b525e; }
+.room .flake path { stroke: #7fb4ff; stroke-width: 2; stroke-linecap: round; opacity: 0; transition: opacity 0.5s; }
+.room.ac-on .flake path { opacity: 1; }
+.room.ac-on .flake { animation: hpspin 5s linear infinite; transform-box: fill-box; transform-origin: center; }
+.room text { fill: #8b919c; font: 600 9px/1 Archivo, sans-serif; letter-spacing: 0.14em; }
+.room.on-living .g-living, .room.on-bedroom .g-bedroom, .room.on-kitchen .g-kitchen { opacity: 1; }
+.room.on-living .l-living, .room.on-bedroom .l-bedroom, .room.on-kitchen .l-kitchen { fill: #ffd9a0; }
+.room.on-living .fl-living, .room.on-bedroom .fl-bedroom, .room.on-kitchen .fl-kitchen { fill: #221d17; }
+@keyframes hpspin { to { transform: rotate(360deg); } }
+.room-hud { position: absolute; left: 10px; right: 10px; bottom: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.room-hud span { font-size: 11px; letter-spacing: 0.08em; padding: 6px 10px; border-radius: 999px; background: rgba(8, 8, 10, 0.75); border: 1px solid var(--line); }
+.room-hud span:first-child { background: var(--ink); color: #050506; border-color: var(--ink); }
+.hp-side .cfg-label { margin-top: 2.4vh; }
+.hp-ring { margin-top: 2.4vh; cursor: pointer; background: transparent; color: var(--ink); }
+.hp-simpad { position: relative; z-index: 7; display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: center; padding: 12vh var(--gutter); background: #0b0b0d; border-top: 1px solid var(--line); }
+.hp-simpad-img img { width: 100%; border-radius: 6px; }
+.hp-simpad .display { font-size: clamp(36px, min(5vw, 9vh), 84px); }
+.hp-simpad .btn { margin-top: 3vh; }
+.product-homepad .p-gallery, .product-homepad .p-specs, .product-homepad .p-more, .product-homepad .showroom { position: relative; z-index: 7; }
+@media (max-width: 900px), (max-aspect-ratio: 4/5) {
+  .hp-try-grid { grid-template-columns: minmax(0, 1fr); }
+  .hp-try { display: block; }
+  .hp-try-grid .slot { height: 34vh; }
+  .room { width: 100%; }
+  .hp-simpad { grid-template-columns: 1fr; }
+}
+/* catalog images carry text: never crop them */
+.product-homepad .p-gal-grid { align-items: start; }
+.product-homepad .p-gal-grid figure, .product-homepad .p-gal-grid .g-a, .product-homepad .p-gal-grid .g-b, .product-homepad .p-gal-grid .g-c { height: auto; }
+.product-homepad .p-gal-grid img { height: auto; display: block; }
+.product-homepad .p-gal-grid .g-a { grid-row: span 2; }
+/* floor plan: HUD sits under the plan, not over it */
+.room { aspect-ratio: auto; }
+.room svg { aspect-ratio: 4 / 3; height: auto; padding: 4%; }
+.room-hud { position: static; padding: 0 10px 12px; }

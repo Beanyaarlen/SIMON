@@ -176,7 +176,10 @@
   class M3Model {
     constructor(opts) {
       opts = opts || {};
-      this.kind = 'm3';
+      this.kind = opts.kind || 'm3';
+      this.area = opts.area || P - 0.36;          // size of the rocker field
+      this.hasInd = opts.indicator !== false;     // indicator / fluorescent bar
+      this.rockerDepth = opts.rockerDepth || 0.3;
       const R = resources();
       this.group = new T.Group();
       this.panel = new T.Group(); this.group.add(this.panel);
@@ -184,7 +187,15 @@
       this.baseMat = new T.MeshPhysicalMaterial({ color: 0xdedede, roughness: 0.45, clearcoat: 0.3, clearcoatRoughness: 0.4 });
       // base plate with a slim contour
       this.base = new T.Group();
-      const bm = new T.Mesh(keyGeometry(P, P, 0.62, 0.16, 0.05), this.baseMat); bm.position.z = -0.08; this.base.add(bm);
+      const bm = new T.Mesh(keyGeometry(P, P, opts.baseDepth || 0.62, opts.baseRadius || 0.16, 0.05), this.baseMat); bm.position.z = opts.baseZ != null ? opts.baseZ : -0.08; this.base.add(bm);
+      if (opts.rim) {
+        // ultra-thin raised frame around the rockers (E6: 1.2 mm)
+        const sh = rrect(P, P, opts.baseRadius || 0.16);
+        sh.holes.push(rrect(this.area + 0.04, this.area + 0.04, 0.06, 0, 0, T.Path));
+        const rg = new T.ExtrudeGeometry(sh, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 6 });
+        rg.translate(0, 0, 0.0);
+        this.rimMesh = new T.Mesh(rg, this.faceMat); this.base.add(this.rimMesh);
+      }
       this.panel.add(this.base);
       this.rockersWrap = new T.Group(); this.panel.add(this.rockersWrap);
       this.logo = new T.Mesh(new T.PlaneGeometry(0.8, 0.2), new T.MeshBasicMaterial({ map: logoTex(), transparent: true, opacity: 0.3, depthWrite: false }));
@@ -206,15 +217,15 @@
       this.gang = n;
       this.rockers.forEach((r) => { r.mesh.geometry.dispose(); this.rockersWrap.remove(r.g); });
       const prev = this.rockers; this.rockers = [];
-      rects(n, P - 0.36, P - 0.36, 0.06).forEach((r, i) => {
+      rects(n, this.area, this.area, 0.06).forEach((r, i) => {
         const g = new T.Group(); g.position.set(r[0], r[1], 0.0);
-        const mesh = new T.Mesh(keyGeometry(r[2], r[3], 0.3, 0.08, 0.05), this.faceMat);
+        const mesh = new T.Mesh(keyGeometry(r[2], r[3], this.rockerDepth, 0.08, 0.05), this.faceMat);
         mesh.position.z = 0.1; mesh.userData.keyIndex = i; g.add(mesh);
         const bar = new T.Mesh(new T.PlaneGeometry(0.075, 0.46), new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false }));
         const bx = -r[2] / 2 + 0.34, by = r[3] / 2 - 0.6;
-        bar.position.set(bx, by, 0.104); g.add(bar);
+        bar.position.set(bx, by, 0.104); bar.visible = this.hasInd; g.add(bar);
         const halo = new T.Mesh(new T.PlaneGeometry(0.5, 1.05), new T.MeshBasicMaterial({ map: haloTex(), color: 0xf3f6ff, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false }));
-        halo.position.set(bx, by, 0.106); g.add(halo);
+        halo.position.set(bx, by, 0.106); halo.visible = this.hasInd; g.add(halo);
         this.rockersWrap.add(g);
         const was = prev[i];
         this.rockers.push({ g, mesh, bar, halo, w: r[2], h: r[3], on: was ? was.on : true, ang: was ? was.ang : -TILT, mix: was ? was.mix : 1 });
@@ -275,7 +286,8 @@
       // exploded view
       const ex = clamp(st.explode || 0, 0, 1);
       const ee = ex < 0.5 ? 4 * ex * ex * ex : 1 - Math.pow(-2 * ex + 2, 3) / 2;
-      this.rockersWrap.position.z = ee * 6.5;
+      this.rockersWrap.position.z = ee * 6.5 + (st.lift || 0) * 2.6;
+      this.rockersWrap.rotation.y = (st.lift || 0) * -0.5;
       this.base.position.z = ee * 3.2;
       this.logo.position.z = 0.08 + ee * 3.2;
       const gs = ez(Math.min(1, ex / 0.22));
@@ -292,6 +304,7 @@
       if (part) { out.set(0, 0, 0); part.obj.updateWorldMatrix(true, false); return part.obj.localToWorld(out); }
       if (name === 'indicator') { out.set(r0.bar.position.x + 0.7, r0.bar.position.y - 0.35, 0.12); r0.g.updateWorldMatrix(true, false); return r0.g.localToWorld(out); }
       if (name === 'edge') out.set(P / 2, 0, 0);
+      else if (name === 'rim') out.set(P / 2 - (P - this.area) / 4, P * 0.18, 0.14);
       else if (name === 'corner') out.set(P / 2 - 0.5, -P / 2 + 0.5, 0.1);
       else if (name === 'bottom') out.set(0, -P / 2, 0);
       else if (name === 'rocker') { out.set(0, r0.h * 0.2, 0.2); r0.g.updateWorldMatrix(true, false); return r0.g.localToWorld(out); }

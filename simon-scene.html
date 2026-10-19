@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simon Smart Scene Studio — Set the mood | PT. Klik Hiro Optima</title>
+<meta name="description" content="Try Simon smart lighting: dim each light with a swipe, pick your Simon finish, save scenes to buttons A–D and recall the whole mood with one tap.">
+<meta name="theme-color" content="#050506">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/product.css">
+<link rel="stylesheet" href="css/scene.css">
+</head>
+<body class="product product-scene">
+<header class="nav">
+  <a href="index.html" class="nav-logo" aria-label="PT. Klik Hiro Optima — home"><img src="assets/img/logo-kho.png" alt="PT. Klik Hiro Optima"></a>
+  <a href="index.html#lineup" class="nav-back">← All series</a>
+  <nav class="nav-links" aria-label="Sections"><a href="#studio">Studio</a><a href="#scenes">My scenes</a><a href="#showroom">Showroom</a></nav>
+  <div class="nav-series" aria-label="Series"><a href="simon-i7.html">i7</a><a href="simon-m7.html">M7</a><a href="simon-m3.html">M3</a><a href="simon-m1.html">M1</a><a href="simon-e6.html">E6</a><a href="simon-e3.html">E3</a><a href="simon-docking.html">Dock</a><a href="simon-homepad.html">Homepad</a><a href="simon-scene.html" class="on" aria-current="page">Scenes</a></div>
+</header>
+
+<main id="main">
+  <section id="studio" class="sc-studio">
+    <div class="sc-head">
+      <div>
+        <p class="eyebrow">Simon Smart · Scene Studio</p>
+        <h1 class="display">Set the mood.<br><span>Save the scene.</span></h1>
+      </div>
+      <div class="sc-intro">
+        <p>Dim every light with a swipe, choose your Simon finish, then save the whole mood to one button. Tap it again any time to bring it back.</p>
+        <button type="button" class="btn btn-ghost" id="guideStart">Start the guide</button>
+      </div>
+    </div>
+
+    <div class="sc-grid">
+      <div class="sc-stage" id="stage">
+        <canvas id="room" aria-label="Bedroom preview: the lights follow the switch" role="img"></canvas>
+        <div class="sc-stage-tag"><span class="dot"></span><span id="sceneTag">Scene A</span></div>
+        <div class="sc-stage-legend" aria-hidden="true"><span data-legend="1">LED Strip <b>0%</b></span><span data-legend="2">Downlight <b>0%</b></span><span data-legend="3">Walk-in Closet <b>0%</b></span><span data-legend="4">Bedside <b>0%</b></span></div>
+      </div>
+
+      <div class="sc-controls">
+        <div class="sc-dimmer">
+          <div class="sc-plate dimmer" id="dimmer" data-finish="black"><div class="seg seg-1" data-seg="1" role="slider" tabindex="0" aria-label="LED Strip dimmer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Off"><span class="seg-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button type="button" class="seg-dot" data-toggle="1" aria-label="Turn LED Strip on or off" aria-pressed="false"></button></div><div class="seg seg-2" data-seg="2" role="slider" tabindex="0" aria-label="Downlight dimmer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Off"><span class="seg-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button type="button" class="seg-dot" data-toggle="2" aria-label="Turn Downlight on or off" aria-pressed="false"></button></div><div class="seg seg-3" data-seg="3" role="slider" tabindex="0" aria-label="Walk-in Closet dimmer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Off"><span class="seg-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button type="button" class="seg-dot" data-toggle="3" aria-label="Turn Walk-in Closet on or off" aria-pressed="false"></button></div><div class="seg seg-4" data-seg="4" role="slider" tabindex="0" aria-label="Bedside dimmer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Off"><span class="seg-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button type="button" class="seg-dot" data-toggle="4" aria-label="Turn Bedside on or off" aria-pressed="false"></button></div></div>
+          <div class="seg-labels"><div><b>LED Strip</b><span data-level="1">0%</span></div><div><b>Downlight</b><span data-level="2">0%</span></div><div><b>Walk-in Closet</b><span data-level="3">0%</span></div><div><b>Bedside</b><span data-level="4">0%</span></div></div>
+          <p class="sc-cap">4-Gang Dimmer Switch<small>Swipe up / down on a key to dim · tap the dot to switch on or off</small></p>
+        </div>
+
+        <div class="sc-row">
+          <div class="sc-actions">
+            <button type="button" class="btn btn-ghost customize-btn" aria-expanded="false" aria-controls="swatches">Customize</button>
+            <div class="sc-swatches" id="swatches" hidden><p>Simon finish · <b id="finishName">Black Doff</b></p><div><button type="button" class="sw" data-finish="white" style="--c:#e9e9e7" aria-label="White" title="White"></button><button type="button" class="sw" data-finish="champ" style="--c:#d8c6a1" aria-label="Champagne" title="Champagne"></button><button type="button" class="sw" data-finish="dgrey" style="--c:#5d5d5f" aria-label="Dark Grey" title="Dark Grey"></button><button type="button" class="sw" data-finish="black" style="--c:#262627" aria-label="Black Doff" title="Black Doff"></button><button type="button" class="sw" data-finish="mocha" style="--c:#48433b" aria-label="Mocha" title="Mocha"></button></div></div>
+            <button type="button" class="btn btn-solid save-btn">Save Scenario</button>
+          </div>
+          <span class="sc-arrow" aria-hidden="true"></span>
+          <div class="sc-scene">
+            <div class="sc-plate scene-switch" id="sceneSwitch" data-finish="black" role="group" aria-label="Smart Scene Switch"><button type="button" class="quad slot-a" data-slot="A" aria-label="Scene button A"><span>A</span><i></i></button><button type="button" class="quad slot-b" data-slot="B" aria-label="Scene button B"><span>B</span><i></i></button><button type="button" class="quad slot-c" data-slot="C" aria-label="Scene button C"><span>C</span><i></i></button><button type="button" class="quad slot-d" data-slot="D" aria-label="Scene button D"><span>D</span><i></i></button></div>
+            <p class="sc-cap">Smart Scene Switch<small>Active button: <b id="activeSlot">A</b></small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scenes" class="sc-scenes">
+    <div class="sc-scenes-head"><h2 class="display">My scenes</h2><button type="button" class="text-link" id="resetScenes">Reset to default scenes</button></div>
+    <div class="sc-table-wrap">
+      <table class="sc-table">
+        <thead><tr><th scope="col">Button</th><th scope="col">Name</th><th scope="col">Finish</th><th scope="col">LED Strip</th><th scope="col">Downlight</th><th scope="col">Walk-in Closet</th><th scope="col">Bedside</th></tr></thead>
+        <tbody id="sceneRows"></tbody>
+      </table>
+    </div>
+    <p class="sc-note">Scenes are saved in this browser, so they are still here when you come back.</p>
+  </section>
+
+  <footer id="showroom" class="showroom" data-sec="showroom">
+    <div class="sr-top">
+      <img src="assets/img/logo-kho.png" alt="PT. Klik Hiro Optima — Switch Design &amp; Smart Home" class="sr-kho">
+      <img src="assets/img/logo-simon.png" alt="Simon" class="sr-simon">
+    </div>
+    <div class="sr-grid">
+      <div class="sr-office reveal">
+        <h3>Office</h3>
+        <p>Jl. Kwini 8 No. 10, Jakarta Pusat 10410</p>
+        <p><a href="tel:+62213811168">(021) 3811 168</a></p>
+        <p><a href="mailto:klikhirooptima@gmail.com">klikhirooptima@gmail.com</a></p>
+      </div>
+      <div class="sr-list">
+        <p class="eyebrow">Showroom</p>
+        <div class="sr-cards">
+          <div class="reveal"><h4>PIK 1</h4><p><b>Rukan Metro Broadway</b><br>9BE, PIK, Jakarta Utara 14460</p></div>
+          <div class="reveal"><h4>PIK 2</h4><p><b>Indonesia Design District,</b><br>Blok Market Place, Unit S7a<br>Jl. Rasuna Said PIK 2</p></div>
+          <div class="reveal"><h4>Alam Sutera</h4><p><b>Open Door</b> (Design and Lifestyle Centre)<br>The Flavor Bliss Lot 28-29 Unit 59<br>Jl. Alam Sutera Boulevard Kav 6, Serpong, Banten</p></div>
+          <div class="reveal"><h4>Green Lake</h4><p><b>Korean Town</b> Blok RCBB No. 33,<br>Green Lake City, Tangerang</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="sr-bottom">
+      <a href="https://switchdesignandsmarthome.com" target="_blank" rel="noopener">switchdesignandsmarthome.com</a>
+      <a href="https://www.instagram.com/klikhirooptima" target="_blank" rel="noopener">@klikhirooptima</a>
+      <span>© 2026 PT. Klik Hiro Optima. All rights reserved.</span>
+    </div>
+  </footer>
+</main>
+
+<div class="sc-modal" id="saveModal" hidden>
+  <form class="sc-modal-card" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
+    <h3 id="saveTitle">Save to button <span id="saveSlot">A</span></h3>
+    <label for="sceneName">Scenario name</label>
+    <input id="sceneName" class="sc-modal-input" maxlength="24" autocomplete="off" placeholder="e.g. Movie, Relax, Night">
+    <div class="sc-modal-sum" id="saveSummary"></div>
+    <div class="sc-modal-btns"><button type="button" class="btn btn-ghost" data-close>Cancel</button><button type="submit" class="btn btn-solid">Save</button></div>
+  </form>
+</div>
+
+<div class="sc-guide" id="guide" hidden>
+  <div class="sc-guide-marker" id="guideMarker" hidden><span></span></div>
+  <div class="sc-guide-card" role="dialog" aria-live="polite" aria-labelledby="guideTitle">
+    <div class="sc-guide-top"><span>Step <b id="guideNum">1</b> / <span id="guideTotal">7</span></span><button type="button" class="text-link" data-guide-skip>Skip</button></div>
+    <h3 id="guideTitle">Smart Scene Guide</h3>
+    <p id="guideCopy"></p>
+    <div class="sc-guide-btns"><button type="button" class="btn btn-ghost" data-guide-back>Back</button><button type="button" class="btn btn-solid" data-guide-next>Try it</button></div>
+  </div>
+</div>
+
+<script src="js/vendor/three.min.js"></script>
+<script src="js/scene.js"></script>
+</body>
+</html>

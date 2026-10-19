@@ -156,7 +156,9 @@ body.night #explore .bg::after { background: rgba(2, 2, 3, 0.9); }
 }
 @media (max-width: 900px), (max-aspect-ratio: 4/5) {
   .nav-back { display: none; }
-  .nav-series a { padding: 6px 10px; font-size: 11px; }
+  .nav-series { min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .nav-series::-webkit-scrollbar { display: none; }
+  .nav-series a { flex: none; padding: 6px 9px; font-size: 11px; }
   .nav-toggle { display: none; }
   .p-hero-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 2vh; padding-top: calc(var(--nav-h) + 2vh); padding-bottom: 4vh; align-items: start; }
   .p-hero .slot { grid-row: 2; }

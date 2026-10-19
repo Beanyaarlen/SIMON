@@ -163,7 +163,7 @@ button { font: inherit; color: inherit; }
 .tt-row { display: flex; align-items: center; gap: 0.8vw; }
 .tiktok { position: relative; margin: 0; flex: none; width: clamp(100px, min(15vw, 26vh), 250px); }
 .tiktok img { width: 100%; height: auto; filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6)); }
-.tiktok figcaption { position: absolute; left: -6px; bottom: -8px; transform: rotate(16deg); font-size: clamp(12px, 1.1vw, 16px); color: var(--ink-2); }
+.tiktok figcaption { margin-top: 14px; text-align: center; font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mute); }
 #helloArrow { position: absolute; inset: 0; overflow: visible; }
 #helloArrow path { fill: none; stroke: #dcdcd8; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)); }
 .hello-line { grid-column: 1 / -1; grid-row: 2; margin: 0; text-align: center; font-size: clamp(20px, min(2.6vw, 4.6vh), 42px); font-weight: 300; color: var(--ink-2); }

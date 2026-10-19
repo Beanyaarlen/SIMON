@@ -494,8 +494,8 @@
     const mcx = (l + r) / 2, mcy = (tp + bt) / 2;
     // start: TikTok edge facing the switch; end: switch edge facing the TikTok
     let sx, sy, ex, ey;
-    if (ti.left > r) { sx = ti.left + ti.width * 0.12; sy = ti.top + ti.height * 0.78; ex = r + 18; ey = clamp(sy + (bt - sy) * 0.35, tp + 30, bt - 20); }
-    else { sx = ti.left + ti.width * 0.2; sy = ti.bottom - 4; ex = clamp(sx - 40, l + 30, r - 30); ey = tp - 18; }
+    if (ti.left > r) { sx = ti.left - 10; sy = ti.top + ti.height * 0.55; ex = r + 18; ey = clamp(sy + (bt - sy) * 0.35, tp + 30, bt - 20); }
+    else { sx = ti.left - 8; sy = ti.top + ti.height * 0.6; ex = clamp(sx - 40, l + 30, r - 30); ey = tp - 18; }
     const dx = ex - sx, dy = ey - sy, len = Math.hypot(dx, dy) || 1;
     const nx = -dy / len, ny = dx / len, bulge = Math.min(140, len * 0.32) * (ti.left > r ? -1 : 1);
     const cx = (sx + ex) / 2 + nx * bulge, cy = (sy + ey) / 2 + ny * bulge;

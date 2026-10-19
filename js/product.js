@@ -104,11 +104,11 @@
     };
     A.setLeds = (on) => m.keys.forEach((k) => (k.on = on));
   } else {
-    const m = new M3Model({ gang: sel.gang });
+    const m = new M3Model(Object.assign({ gang: sel.gang }, D.model || {}));
     root.add(m.group);
     A = {
       model: m, extras: [],
-      update(st, dt) { m.update({ col: st.col, gang: sel.gang, explode: st.explode, glow: st.glow }, dt); },
+      update(st, dt) { m.update({ col: st.col, gang: sel.gang, explode: st.explode, glow: st.glow, lift: st.lift }, dt); },
       press(i) { m.press(i); },
       pressables() { return m.pressables; },
       keys() { return m.rockers; },
@@ -142,7 +142,7 @@
 
   /* ---------------- state ---------------- */
   const N = D.features.length;
-  const BASE = { rx: 0, ry: 0, rz: 0, zoom: 1, focus: 0, explode: 0, modules: 1, glow: 0, trio: 0, s: 1.25 };
+  const BASE = { rx: 0, ry: 0, rz: 0, zoom: 1, focus: 0, explode: 0, modules: 1, glow: 0, trio: 0, lift: 0, s: 1.25 };
   const target = {}, state = {};
   let anchorName = null, action = null, featIdx = -1, mode = 'hero';
   const blend = { a0: null, a1: null, f0: 0, f1: 0, s: 0 };
@@ -450,3 +450,6 @@
   };
   Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 2500))]).then(() => setTimeout(done, 200));
 })();
+
+/* keep the current series visible in the scrollable series nav (phones) */
+(function () { var on = document.querySelector('.nav-series .on'); if (on) on.parentNode.scrollLeft = on.offsetLeft - on.parentNode.offsetLeft - on.parentNode.clientWidth / 2 + on.offsetWidth / 2; })();
