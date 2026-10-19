@@ -97,7 +97,7 @@
   const F = (k) => FINISH[k].rgb.slice();
   const L = (n) => LAYOUT[n].slice();
   const SPACE_STEPS = { g1: 0.14, g2: 0.21, g3: 0.28, g4: 0.35, white: 0.44, champ: 0.51, dgrey: 0.58, black: 0.65, mocha: 0.72, lineup: 0.95 };
-  let KF = [];
+  let KF = [], upPoseG = null;
   /* where the CSS layout wants the switch: centre + box, in viewport fractions */
   function slot(id, name, fill) {
     fill = fill == null ? 0.92 : fill;
@@ -114,29 +114,29 @@
     const M = mobile;
     const m = (d, mo) => (M ? mo : d);
     const list = [];
-    let prev = { x: 0, y: 0.12, s: 2, fw: 0.9, fh: 0.74, rx: 0, ry: 0, rz: 0, explode: 0, modules: 1, layout: L(4), col: F('dgrey'), lineup: 0, mouse: 1 };
-    const K = (id, at, st) => {
+    let prev = { x: 0, y: 0.12, s: 2, fw: 0.9, fh: 0.74, rx: 0, ry: 0, rz: 0, explode: 0, modules: 1, layout: L(4), col: F('dgrey'), lineup: 0, mouse: 1, op: 1 };
+    const K = (id, at, st, opt) => {
       const s = Object.assign({}, prev, st);
       s.layout = (st.layout || prev.layout).slice(); s.col = (st.col || prev.col).slice();
-      list.push({ y: anchor(id, at), st: s }); prev = s;
+      list.push({ y: anchor(id, at), st: s, ride: !!(opt && opt.ride) }); prev = s;
     };
     // 1 hero
     K('hero', 0, Object.assign(slot('hero'), { s: 1.15, rx: 0, ry: 0, mouse: 1 }));
     // 2 hello push button
-    K('hello', 0, Object.assign(slot('hello'), { s: 1.3, rx: -4, ry: m(24, 12), mouse: 0.6 }));
+    K('hello', 0, Object.assign(slot('hello'), { s: 1.3, rx: -4, ry: m(24, 12), mouse: 0.6 }), { ride: true });
     K('hello', 1, { ry: m(30, 18) });
     // 3 anatomy / exploded
     const an = slot('anatomy');
-    K('anatomy', 0, Object.assign({}, an, { s: 1.35, rx: -14, ry: -34, rz: 0, mouse: 0.35 }));
+    K('anatomy', 0, Object.assign({}, an, { s: 1.35, rx: -14, ry: -34, rz: 0, mouse: 0.35 }), { ride: true });
     K('anatomy', 0.1, {});
     K('anatomy', 0.4, { explode: 1, rx: -12, ry: -50, fh: an.fh * m(0.72, 0.9) });
     K('anatomy', 0.5, {});
-    K('anatomy', 0.62, { explode: 0, rx: -3, ry: -84, fh: an.fh });
+    K('anatomy', 0.62, { explode: 0, rx: -3, ry: -84, fh: an.fh, y: an.y + m(0.02, 0.13) });
     K('anatomy', 0.72, {});
-    K('anatomy', 0.82, { rx: 0, ry: 0 });
+    K('anatomy', 0.82, { rx: 0, ry: 0, y: an.y });
     K('anatomy', 1, {});
     // 4 complete design language
-    K('language', 0, Object.assign(slot('language'), { s: m(1, 0.85), rx: 0, ry: 0, modules: 1, mouse: 0.3 }));
+    K('language', 0, Object.assign(slot('language'), { s: m(1, 0.85), rx: 0, ry: 0, modules: 1, mouse: 0.3 }), { ride: true });
     K('language', 0.1, {});
     K('language', 0.7, { modules: 4 });
     K('language', 0.86, { rx: -6, ry: -10 });
@@ -166,18 +166,22 @@
     K('space', 0.86, Object.assign(slot('space', 'lineup', 0.86), { lineup: 1, col: F('dgrey'), s: 2, rx: m(-8, -4), ry: m(-18, -8), mouse: 0.4 }));
     K('space', 1, {});
     // 8 gallery — the lineup flies away
-    K('gallery', 0, { y: 1.9 });
-    K('gallery', 1, { y: 1.9, lineup: 0, x: 0, rx: 0, ry: 0 });
-    // 9 upgrade anytime (leave room for the chips around the switch)
     const up = slot('upgrade');
-    K('upgrade', 0, { x: up.x, y: up.y, fw: up.fw * m(0.5, 0.9), fh: up.fh * m(0.8, 0.5), s: 2, mouse: 0.5 });
+    upPoseG = { x: up.x, y: up.y, fw: up.fw * m(0.5, 0.9), fh: up.fh * m(0.8, 0.5), s: 2, lineup: 0, modules: 1, rx: 0, ry: 0, rz: 0, mouse: 0.5 };
+    const upPose = upPoseG;
+    K('gallery', 0, { y: 1.9 });
+    K('gallery', 0.15, { y: 1.9, op: 0 });
+    K('gallery', 0.3, Object.assign({}, upPose, { op: 0 }));
+    K('gallery', 1, Object.assign({}, upPose, { op: 1 }));
+    // 9 upgrade anytime (leave room for the chips around the switch)
+    K('upgrade', 0, Object.assign({}, upPose, { op: 1 }));
     K('upgrade', 0.3, {});
     K('upgrade', 0.45, { ry: -12, rx: 4 });
     K('upgrade', 0.7, { ry: 10, rx: -4 });
     K('upgrade', 0.86, { ry: 0, rx: 0 });
     K('upgrade', 1, {});
     // 10 lineup — the switch steps aside for the Simon family
-    K('lineup', 0, { y: -1.9 });
+    K('lineup', 0, { op: 0, y: up.y + 0.35, s: 1.7 });
     KF = list.sort((a, b) => a.y - b.y);
   }
 
@@ -191,12 +195,15 @@
         if (y >= KF[i].y && y < KF[i + 1].y) { a = KF[i]; b = KF[i + 1]; t = (y - a.y) / Math.max(1, b.y - a.y); break; }
       }
     }
+    const u = t;
     t = easeIO(t);
     for (const k in a.st) {
       const va = a.st[k], vb = b.st[k];
       if (Array.isArray(va)) { out[k] = out[k] || []; for (let i = 0; i < va.length; i++) out[k][i] = lerp(va[i], vb[i], t); }
       else out[k] = lerp(va, vb, t);
     }
+    // "ride": approach the next pose together with its section as it scrolls in
+    if (b.ride && a !== b) out.y -= (2 * (1 - u) * (b.y - a.y) / vh) * t;
     return out;
   }
   function damp(cur, tgt, f) {
@@ -337,6 +344,7 @@
     const max = Math.max(0, track.scrollWidth - vw);
     track.style.transform = `translate3d(${-lp * max}px,0,0)`;
     $('.lu-progress span', lu).style.transform = `scaleX(${lp})`;
+    if (window.__luSync && lu._p > -0.2 && lu._p < 1.2) window.__luSync();
 
     // photo parallax
     const ctl = SEC.control;
@@ -375,6 +383,81 @@
   });
 
   /* ------------------------------------------------------------------ */
+  /* Lineup: swipe / drag / horizontal wheel / arrows move the track       */
+  /* (the track is driven by vertical scroll, so sideways input is turned  */
+  /*  into the matching page scroll)                                       */
+  /* ------------------------------------------------------------------ */
+  (function lineupSideways() {
+    const lu = $('#lineup'), stick = lu && $('.stick', lu), track = lu && $('.track', lu);
+    if (!stick || !track) return;
+    const geo = () => {
+      const S = SEC.lineup, max = Math.max(1, track.scrollWidth - vw);
+      return { S, max, k: (0.92 * S.range) / max, y0: S.top + 0.04 * S.range, y1: S.top + 0.96 * S.range };
+    };
+    const curY = () => (lenis ? lenis.targetScroll : window.scrollY);
+    const jump = (yy, smoothDur) => {
+      const g = geo(); yy = clamp(yy, g.S.top, g.S.top + g.S.range);
+      if (lenis) lenis.scrollTo(yy, smoothDur ? { duration: smoothDur, easing: (t) => 1 - Math.pow(1 - t, 3) } : { immediate: true });
+      else window.scrollTo({ top: yy, behavior: smoothDur ? 'smooth' : 'auto' });
+    };
+    // trackpad / mouse horizontal wheel
+    stick.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 1) return;
+      e.preventDefault();
+      jump(curY() + e.deltaX * geo().k);
+    }, { passive: false });
+    // touch + mouse drag
+    let down = null, dragged = false;
+    stick.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || e.target.closest('.lu-nav')) return;
+      down = { x: e.clientX, y: e.clientY, sy: curY(), axis: null, lx: e.clientX, lt: performance.now(), v: 0, id: e.pointerId };
+      dragged = false;
+    });
+    stick.addEventListener('pointermove', (e) => {
+      if (!down || e.pointerId !== down.id) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      if (!down.axis) {
+        if (Math.hypot(dx, dy) < 8) return;
+        down.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (down.axis === 'x') { try { stick.setPointerCapture(e.pointerId); } catch (err) { /* noop */ } lu.classList.add('dragging'); }
+      }
+      if (down.axis !== 'x') { if (e.pointerType === 'mouse') down = null; return; }
+      dragged = true;
+      const now = performance.now(), ddt = Math.max(1, now - down.lt);
+      down.v = 0.8 * down.v + 0.2 * ((e.clientX - down.lx) / ddt); down.lx = e.clientX; down.lt = now;
+      jump(down.sy - dx * geo().k);
+    });
+    const up = (e) => {
+      if (!down) return;
+      if (down.axis === 'x') {
+        const fling = clamp(down.v, -3, 3) * 260; // px of track travel
+        if (Math.abs(fling) > 20) jump(curY() - fling * geo().k, 0.9);
+      }
+      down = null; lu.classList.remove('dragging');
+    };
+    stick.addEventListener('pointerup', up); stick.addEventListener('pointercancel', up);
+    // links and images must not start a native drag (it cancels the swipe)
+    track.addEventListener('dragstart', (e) => e.preventDefault());
+    $$('a, img', track).forEach((el) => el.setAttribute('draggable', 'false'));
+    // a drag must not open the card underneath
+    track.addEventListener('click', (e) => { if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; } }, true);
+    // arrows: one card at a time
+    const btns = $$('[data-lu]', lu);
+    btns.forEach((b) => b.addEventListener('click', () => {
+      const g = geo(), first = track.children[1] || track.children[0];
+      const step = first.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || 28);
+      const p = clamp((curY() - g.y0) / (g.y1 - g.y0), 0, 1);
+      const off = clamp(p * g.max + (+b.dataset.lu) * step, 0, g.max);
+      jump(g.y0 + (off / g.max) * (g.y1 - g.y0), 0.8);
+    }));
+    lineupSideways.sync = () => {
+      const g = geo(), p = (window.scrollY - g.y0) / (g.y1 - g.y0);
+      if (btns[0]) btns[0].disabled = p <= 0.005; if (btns[1]) btns[1].disabled = p >= 0.995;
+    };
+    window.__luSync = lineupSideways.sync;
+  })();
+
+  /* ------------------------------------------------------------------ */
   /* Configurator: any finish × any configuration                         */
   /* ------------------------------------------------------------------ */
   const manual = { gang: null, color: null };
@@ -390,7 +473,7 @@
   /* Main loop                                                            */
   /* ------------------------------------------------------------------ */
   const target = {}, state = {};
-  let intro = 0, last = performance.now(), demoT = 0, demoIdx = 0;
+  let intro = 0, last = performance.now(), demoT = 0, demoIdx = 0, prevPose = null, blurS = 0;
   const tmpA = new THREE.Vector3();
 
   function frame(now) {
@@ -407,7 +490,16 @@
     if (manual.color && spP > -0.02 && spP < 0.8) target.col = FINISH[manual.color].rgb.slice();
     if (state.x == null) damp(state, target, 1);
     damp(state, target, SNAP ? 1 : 1 - Math.exp(-dt * (reduced ? 30 : 6.5)));
-    const st = state;
+    // lift the switch out of the "Start simple" photo on its way to Upgrade Anytime
+    let st = state, lockA = 0, opF = state.op == null ? 1 : state.op;
+    const em = emergence(y);
+    if (em) {
+      st = Object.assign({}, state);
+      ['x', 'y', 'fw', 'fh', 's', 'rx', 'ry', 'rz'].forEach((kk) => (st[kk] = lerp(em.slot[kk], em.pose[kk], em.a)));
+      st.lineup = state.lineup * (1 - em.a); st.explode = state.explode * (1 - em.a); st.modules = lerp(state.modules, 1, em.a);
+      st.mouse = state.mouse * (1 - em.a);
+      opF = em.vis; lockA = em.a;
+    }
     const t = now / 1000;
 
     // world size + fitting
@@ -433,6 +525,18 @@
       D(st.ry) + mouse.sx * 0.12 * mi + Math.sin(t * 0.45) * 0.018 * idle,
       D(st.rz)
     );
+    // motion blur + a slight fade while the switch travels between sections
+    const sPx = (OUTER * k / Wv) * vw, pX = st.x * vw / 2, pY = st.y * vh / 2;
+    let blurT = 0;
+    if (!SNAP && !reduced && prevPose && intro >= 1) {
+      const sp = Math.hypot(pX - prevPose[0], pY - prevPose[1], (sPx - prevPose[2]) * 0.6) / Math.max(dt, 1 / 120);
+      blurT = clamp((sp - 300) / 140, 0, 7) * (1 - lockA);
+    }
+    prevPose = [pX, pY, sPx];
+    blurS += (blurT - blurS) * Math.min(1, dt * 10);
+    const opOut = clamp(opF, 0, 1) * (1 - 0.3 * clamp(blurS / 7, 0, 1));
+    canvas.style.opacity = opOut.toFixed(3);
+    canvas.style.filter = blurS > 0.25 ? `blur(${blurS.toFixed(2)}px)` : 'none';
     keyLight.position.x = -6 + Math.sin(t * 0.25) * 4 * idle;
     const R = OUTER * k;
     sheen.position.set(root.position.x - R * (0.9 - Math.sin(t * 0.3) * 0.25 * idle), root.position.y + R * 0.95, R * 1.15);
@@ -466,9 +570,30 @@
     main.group.position.set(mx0 * st.lineup, my0 * st.lineup + (st.lineup > 0.01 ? Math.sin(t * 0.8 + 3) * 0.18 * st.lineup : 0), 0);
 
     root.updateMatrixWorld(true);
-    updateHover(st);
+    if (opOut > 0.4) updateHover(st); else { hoverKey = -1; document.documentElement.style.cursor = ''; }
     updateLabels(st);
-    renderer.render(scene, camera);
+    if (opOut > 0.004) renderer.render(scene, camera);
+  }
+
+  /* where the switch sits inside the "Start simple" photo (concrete-wall.jpg) */
+  const galPh = $('.g4 .ph'), galImg = $('.g4 img');
+  const PHOTO_SW = { u: 0.495, v: 0.538, w: 0.29 };
+  function emergence(y) {
+    if (!galPh || !galImg || !SEC.gallery || !SEC.upgrade) return null;
+    const yStart = anchor('gallery', 0.15), yEnd = SEC.upgrade.top;
+    if (y < yStart || y >= yEnd) return null;
+    const pr = galPh.getBoundingClientRect();
+    if (!pr.height) return null;
+    const cAbs = pr.top + y + pr.height * PHOTO_SW.v;
+    let yE = cAbs - 0.62 * vh, fEnd = yE + 0.16 * vh, lEnd = fEnd + 0.06 * vh;
+    if (yEnd - lEnd < 0.32 * vh) { const sh = 0.32 * vh - (yEnd - lEnd); yE -= sh; fEnd -= sh; lEnd -= sh; }
+    const vis = clamp((y - yE) / (fEnd - yE), 0, 1);
+    const a = y < lEnd ? 1 : 1 - easeIO(clamp((y - lEnd) / (yEnd - lEnd), 0, 1));
+    const r = galImg.getBoundingClientRect();
+    const cx = r.left + PHOTO_SW.u * r.width, cy = r.top + PHOTO_SW.v * r.height, w = PHOTO_SW.w * r.width;
+    const U = upPoseG || { x: 0, y: 0, fw: 0.5, fh: 0.4, s: 2 };
+    const slotNow = { x: U.x, y: U.y - (2 * (yEnd - y)) / vh, fw: U.fw, fh: U.fh, s: U.s, rx: 0, ry: 0, rz: 0 };
+    return { a, vis, slot: slotNow, pose: { x: (cx / vw) * 2 - 1, y: 1 - (cy / vh) * 2, fw: w / vw, fh: 1, s: 8, rx: 0, ry: 12, rz: 0 } };
   }
 
   function lineupOffset(j) {

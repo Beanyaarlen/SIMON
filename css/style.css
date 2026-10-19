@@ -443,3 +443,35 @@ button { font: inherit; color: inherit; }
   .hero-badge img, .scroll-hint i, .hint i { animation: none; }
   .step-in, .reveal, .step, .chip { transition-duration: 0.01s !important; }
 }
+
+/* lineup: swipe / drag sideways as well as scrolling down */
+#lineup .stick { touch-action: pan-y; }
+#lineup .track { user-select: none; -webkit-user-select: none; }
+#lineup .track img { -webkit-user-drag: none; user-drag: none; }
+#lineup.dragging .track { cursor: grabbing; }
+#lineup .track { cursor: grab; }
+.lu-nav { position: absolute; right: var(--gutter); bottom: calc(5vh - 24px); display: flex; gap: 10px; z-index: 3; }
+#lineup .lu-progress { right: calc(var(--gutter) + 130px); }
+.lu-nav button { width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(5, 5, 6, 0.6); color: var(--ink); font-size: 18px; cursor: pointer; transition: border-color 0.3s, background 0.3s, opacity 0.3s; }
+.lu-nav button:hover { border-color: var(--ink); background: rgba(255, 255, 255, 0.08); }
+.lu-nav button:focus-visible { outline: 2px solid var(--led); outline-offset: 3px; }
+.lu-nav button[disabled] { opacity: 0.3; cursor: default; }
+
+/* =========================================================
+   Tablet portrait (iPad): use the big screen — larger type
+   ========================================================= */
+@media (min-width: 700px) and (max-aspect-ratio: 4/5) {
+  :root { --nav-h: 72px; }
+  .nav-logo img { height: 22px; }
+  .steps .display, .lang-head .display, .rev-head .display, .finale-head .display { font-size: clamp(40px, 7vw, 76px); }
+  .steps .body { font-size: 17px; max-width: 46ch; }
+  .steps .eyebrow, .eyebrow { font-size: 13px; }
+  .steps { height: 30vh; }
+  .up-head .display { font-size: clamp(44px, 7.4vw, 84px); }
+  .timeline p { font-size: 16px; max-width: 48ch; }
+  .config .display { font-size: clamp(36px, 6vw, 60px); }
+  .cfg-hint { font-size: 15px; }
+  .rev-text h3 { font-size: clamp(26px, 4.4vw, 40px); }
+  .list-x, .list-v { font-size: 18px; }
+  .card { flex-basis: min(46vw, 38vh, 420px); }
+}
