@@ -119,6 +119,37 @@
     A.setLeds = (on) => m.rockers.forEach((r) => (r.on = on));
   }
 
+  /* ---------------- catalogue exploded view (kits3d.js) ----------------
+     When a feature takes the switch apart, the parts shown are the ones in this
+     series' own Simon brochure, not a generic mechanism. */
+  const KIT_FOR = { i7: 'i7', m7: 'm7', m3: 'm3', m1: 'm1', e6: 'e6', e3: 'e3' };
+  let kit = null;
+  if (window.SimonKits && KIT_FOR[D.series]) {
+    const baseUpdate = A.update, baseAnchor = A.anchor;
+    const ensureKit = () => {
+      if (kit && kit.gang === sel.gang) return;
+      if (kit) { root.remove(kit.group); window.SimonKits.dispose(kit); }
+      kit = window.SimonKits.build(KIT_FOR[D.series], sel.gang); kit.group.visible = false; root.add(kit.group);
+    };
+    A.update = function (st, dt, t) {
+      const e = clamp(st.explode, 0, 1), show = e > 0.02;
+      baseUpdate(show ? Object.assign({}, st, { explode: 0 }) : st, dt, t);
+      A.model.group.visible = !show;
+      if (show) ensureKit();
+      if (kit) {
+        kit.group.visible = show;
+        if (show) { if (st.col) kit.M.pc.color.setRGB(st.col[0], st.col[1], st.col[2]); window.SimonKits.pose(kit, e); }
+      }
+    };
+    A.anchor = function (name, out) {
+      if (kit && kit.group.visible) {
+        if (name === 'mid') { kit.group.updateWorldMatrix(true, false); return kit.group.localToWorld(out.set(0, 0, 0)); }
+        const r = window.SimonKits.anchor(kit, name, out); if (r) return r;
+      }
+      return baseAnchor(name, out);
+    };
+  }
+
   /* ---------------- layout / sections ---------------- */
   let vw = innerWidth, vh = innerHeight, mobile = false;
   const SEC = {};
@@ -243,8 +274,28 @@
     } catch (e) { /* optional */ }
   }
   addEventListener('pointermove', (e) => { ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1); mouse.x = ndc.x; mouse.y = ndc.y; }, { passive: true });
-  addEventListener('click', (e) => {
-    if (hover < 0 || e.target.closest('a, button, .tabs, .range')) return;
+  // taps work the same with a mouse, a finger (iPad / phone) or a pen: a short press that does not move
+  function onTap(handler) {
+    let st = null;
+    addEventListener('pointerdown', (e) => { st = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
+    addEventListener('pointercancel', () => { st = null; }, { passive: true });
+    addEventListener('pointerup', (e) => {
+      if (!st) return; const dx = e.clientX - st.x, dy = e.clientY - st.y, dt = performance.now() - st.t; st = null;
+      if (dx * dx + dy * dy > 144 || dt > 700) return;
+      handler(e);
+    });
+  }
+  onTap((e) => {
+    if (e.target.closest('a, button, .tabs, .range')) return;
+    if (e.pointerType !== 'mouse') {
+      // touch: there is no hover, so find the key under the finger now
+      if (!renderer || state.explode > 0.05 || state.trio > 0.05 || mode === 'hidden') return;
+      const p = new THREE.Vector2((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1);
+      ray.setFromCamera(p, camera);
+      const h = ray.intersectObjects(A.pressables(), false)[0];
+      if (!h) return; hover = h.object.userData.keyIndex;
+    }
+    if (hover < 0) return;
     A.press(hover); clickSound(); lastUser = performance.now();
   });
 

@@ -11,10 +11,6 @@
 
   /* key rectangles for 1–4 gang on a w×h area */
   function rects(n, W, H, gap) {
-    if (n === 4) {
-      const w = (W - gap) / 2, h = (H - gap) / 2, o = w / 2 + gap / 2, p = h / 2 + gap / 2;
-      return [[-o, p, w, h], [o, p, w, h], [-o, -p, w, h], [o, -p, w, h]];
-    }
     const w = (W - gap * (n - 1)) / n;
     return Array.from({ length: n }, (_, i) => [-W / 2 + w / 2 + i * (w + gap), 0, w, H]);
   }
@@ -180,6 +176,11 @@
       this.area = opts.area || P - 0.36;          // size of the rocker field
       this.hasInd = opts.indicator !== false;     // indicator / fluorescent bar
       this.rockerDepth = opts.rockerDepth || 0.3;
+      this.rockerRadius = opts.rockerRadius || 0.08;
+      this.gap = opts.gap || 0.06;
+      this.indStyle = opts.indStyle || 'bar';
+      this.indOnGlow = !!opts.indOnGlow;      // indicator only shown while a feature lights it (E6 LED version)
+      this.logoOnKey = !!opts.logoOnKey;
       const R = resources();
       this.group = new T.Group();
       this.panel = new T.Group(); this.group.add(this.panel);
@@ -187,7 +188,17 @@
       this.baseMat = new T.MeshPhysicalMaterial({ color: 0xdedede, roughness: 0.45, clearcoat: 0.3, clearcoatRoughness: 0.4 });
       // base plate with a slim contour
       this.base = new T.Group();
-      const bm = new T.Mesh(keyGeometry(P, P, opts.baseDepth || 0.62, opts.baseRadius || 0.16, 0.05), this.baseMat); bm.position.z = opts.baseZ != null ? opts.baseZ : -0.08; this.base.add(bm);
+      const BS = opts.baseSize || P;
+      if (opts.wing) {
+        // E3 "wing" plate: 2.4 mm thin floating edge rising to the key field (8.3 mm overall)
+        const edge = new T.Mesh(keyGeometry(BS, BS, 0.24, opts.baseRadius || 0.16, 0.04), this.baseMat); edge.position.z = -0.49; this.base.add(edge);
+        const hb = BS / 2 - 0.12, ht = this.area / 2 + 0.22, hh = 0.41;
+        const fr = new T.CylinderGeometry(ht * Math.SQRT2, hb * Math.SQRT2, hh, 4, 1); fr.rotateY(Math.PI / 4); fr.rotateX(Math.PI / 2); fr.translate(0, 0, -0.49 + hh / 2);
+        fr.computeVertexNormals();
+        this.base.add(new T.Mesh(fr, this.baseMat));
+      } else {
+        const bm = new T.Mesh(keyGeometry(BS, BS, opts.baseDepth || 0.62, opts.baseRadius || 0.16, 0.05), this.baseMat); bm.position.z = opts.baseZ != null ? opts.baseZ : -0.08; this.base.add(bm);
+      }
       if (opts.rim) {
         // ultra-thin raised frame around the rockers (E6: 1.2 mm)
         const sh = rrect(P, P, opts.baseRadius || 0.16);
@@ -200,9 +211,9 @@
       this.rockersWrap = new T.Group(); this.panel.add(this.rockersWrap);
       this.logo = new T.Mesh(new T.PlaneGeometry(0.8, 0.2), new T.MeshBasicMaterial({ map: logoTex(), transparent: true, opacity: 0.3, depthWrite: false }));
       this.logo.position.set(P / 2 - 0.62, -P / 2 + 0.38, 0.08);
+      if (!this.logoOnKey) this.panel.add(this.logo);
       this.rockers = []; this.gang = 0; this.glow = 0;
       this.setGang(opts.gang || 1);
-      this.panel.add(this.logo);
       this._buildInternals();
       this.explode = 0;
     }
@@ -217,19 +228,28 @@
       this.gang = n;
       this.rockers.forEach((r) => { r.mesh.geometry.dispose(); this.rockersWrap.remove(r.g); });
       const prev = this.rockers; this.rockers = [];
-      rects(n, this.area, this.area, 0.06).forEach((r, i) => {
+      rects(n, this.area, this.area, this.gap).forEach((r, i) => {
         const g = new T.Group(); g.position.set(r[0], r[1], 0.0);
-        const mesh = new T.Mesh(keyGeometry(r[2], r[3], this.rockerDepth, 0.08, 0.05), this.faceMat);
+        const rad = n === 1 ? this.rockerRadius : Math.min(this.rockerRadius, 0.12);
+        const mesh = new T.Mesh(keyGeometry(r[2], r[3], this.rockerDepth, rad, 0.05), this.faceMat);
         mesh.position.z = 0.1; mesh.userData.keyIndex = i; g.add(mesh);
-        const bar = new T.Mesh(new T.PlaneGeometry(0.075, 0.46), new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false }));
-        const bx = -r[2] / 2 + 0.34, by = r[3] / 2 - 0.6;
+        const dash = this.indStyle === 'dash';
+        const dotS = this.indStyle === 'dot';
+        const bar = new T.Mesh(dotS ? new T.CircleGeometry(0.075, 20) : dash ? new T.PlaneGeometry(0.42, 0.055) : new T.PlaneGeometry(0.075, 0.46), new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false }));
+        const bx = dash || dotS ? 0 : -r[2] / 2 + 0.34, by = dotS ? r[3] / 2 - 0.75 : dash ? r[3] / 2 - 0.5 : r[3] / 2 - 0.6;
         bar.position.set(bx, by, 0.104); bar.visible = this.hasInd; g.add(bar);
-        const halo = new T.Mesh(new T.PlaneGeometry(0.5, 1.05), new T.MeshBasicMaterial({ map: haloTex(), color: 0xf3f6ff, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false }));
+        const halo = new T.Mesh(dotS ? new T.PlaneGeometry(0.7, 0.7) : dash ? new T.PlaneGeometry(1.05, 0.5) : new T.PlaneGeometry(0.5, 1.05), new T.MeshBasicMaterial({ map: haloTex(), color: 0xf3f6ff, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false }));
         halo.position.set(bx, by, 0.106); halo.visible = this.hasInd; g.add(halo);
         this.rockersWrap.add(g);
         const was = prev[i];
         this.rockers.push({ g, mesh, bar, halo, w: r[2], h: r[3], on: was ? was.on : true, ang: was ? was.ang : -TILT, mix: was ? was.mix : 1 });
       });
+      if (this.logoOnKey) {
+        // the logo is printed on the (last) rocker, bottom-right
+        const last = this.rockers[this.rockers.length - 1];
+        last.g.add(this.logo);
+        this.logo.position.set(P / 2 - 0.62 - last.g.position.x, -P / 2 + 0.36 - last.g.position.y, 0.104);
+      }
     }
     press(i) { const r = this.rockers[i]; if (r) r.on = !r.on; }
     get pressables() { return this.rockers.map((r) => r.mesh); }
@@ -282,6 +302,7 @@
         const v = 0.35 + 0.65 * r.mix;
         r.bar.material.color.setRGB(v * 0.95, v * 0.98, v);
         r.halo.material.opacity = glow * r.mix * 0.3;
+        if (this.indOnGlow) { r.bar.visible = r.halo.visible = glow > 0.02; r.bar.material.opacity = 1; }
       });
       // exploded view
       const ex = clamp(st.explode || 0, 0, 1);
@@ -289,7 +310,7 @@
       this.rockersWrap.position.z = ee * 6.5 + (st.lift || 0) * 2.6;
       this.rockersWrap.rotation.y = (st.lift || 0) * -0.5;
       this.base.position.z = ee * 3.2;
-      this.logo.position.z = 0.08 + ee * 3.2;
+      if (!this.logoOnKey) this.logo.position.z = 0.08 + ee * 3.2;
       const gs = ez(Math.min(1, ex / 0.22));
       this.parts.forEach((p) => {
         p.obj.visible = ex > 0.002;

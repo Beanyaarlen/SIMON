@@ -15,8 +15,8 @@
 <header class="nav">
   <a href="index.html" class="nav-logo" aria-label="PT. Klik Hiro Optima — home"><img src="assets/img/logo-kho.png" alt="PT. Klik Hiro Optima"></a>
   <a href="index.html#lineup" class="nav-back">← All series</a>
-  <nav class="nav-links" aria-label="Sections"><a href="#hero">Overview</a><a href="#explore">Features</a><a href="#try">Try it</a><a href="#simpad">Simpad</a><a href="#specs">Specs</a></nav>
-  <div class="nav-series" aria-label="Series"><a href="simon-i7.html">i7</a><a href="simon-m7.html">M7</a><a href="simon-m3.html">M3</a><a href="simon-m1.html">M1</a><a href="simon-e6.html">E6</a><a href="simon-e3.html">E3</a><a href="simon-docking.html">Dock</a><a href="simon-homepad.html" class="on" aria-current="page">Homepad</a><a href="simon-scene.html">Scenes</a></div>
+  <nav class="nav-links" aria-label="Sections"><a href="#hero">Overview</a><a href="#explore">Features</a><a href="#try">Try it</a><a href="#models">Models</a><a href="#simpad">Simpad</a><a href="#specs">Specs</a></nav>
+  <div class="nav-series" aria-label="Series"><a href="simon-i7.html">i7</a><a href="simon-m7.html">M7</a><a href="simon-m3.html">M3</a><a href="simon-m1.html">M1</a><a href="simon-e6.html">E6</a><a href="simon-e3.html">E3</a><a href="simon-docking.html">Dock</a><a href="simon-homepad.html" class="on" aria-current="page">Homepad</a></div>
 </header>
 <div class="progress" aria-hidden="true"><span></span></div>
 <canvas id="gl" aria-hidden="true"></canvas>
@@ -44,10 +44,10 @@
         <div class="slot" data-slot="explore"></div>
         <div class="ex-panel">
         <article class="feat" aria-live="polite"><span class="num">01 / 06 · Simple smart home</span><h2>Simple to install,<br>simple to use</h2><p>Simple installations, simple to use, simple budget. Homepad Pro Max works with the Zigbee, Tuya, Apple Home and Matter ecosystems.</p><ul><li>Zigbee</li><li>Tuya</li><li>Apple Home</li><li>Matter</li></ul></article>
-        <article class="feat" aria-live="polite"><span class="num">02 / 06 · Smart control</span><h2>All in<br>one panel</h2><p>Lights, curtains, climate and scenes on one screen on the wall — the tiles on the model switch as you watch.</p><ul><li>Lighting</li><li>Curtains</li><li>Climate</li><li>Scenes</li></ul></article>
-        <article class="feat" aria-live="polite"><span class="num">03 / 06 · ZigBee &amp; BLE</span><h2>Up to 100+<br>devices</h2><p>ZigBee and BLE connect up to 100+ smart devices to a single Homepad.</p><ul><li><b>Protocols</b>ZigBee · BLE</li><li><b>Devices</b>100+</li></ul></article>
-        <article class="feat" aria-live="polite"><span class="num">04 / 06 · Video intercom</span><h2>Call &<br>unlock</h2><p>See who is at the door, talk and unlock — right from the panel.</p><ul><li>Call</li><li>Unlock</li></ul></article>
-        <article class="feat" aria-live="polite"><span class="num">05 / 06 · App control</span><h2>Control<br>anywhere</h2><p>The same home in your pocket: the app mirrors the panel, so you can control your home from anywhere.</p><ul><li>Simon Smart app</li><li>Remote control</li></ul></article>
+        <article class="feat" aria-live="polite"><span class="num">02 / 06 · Smart control</span><h2>All in<br>one panel</h2><p>A multi-control smart touch screen: every device in the Simon Smart app — switches, lights, curtains, air conditioners — on one screen on the wall, plus screen-to-screen calling.</p><ul><li>Lighting</li><li>Curtains</li><li>Climate</li><li>Scenes</li></ul></article>
+        <article class="feat" aria-live="polite"><span class="num">03 / 06 · ZigBee &amp; BLE</span><h2>Up to 100+<br>devices</h2><p>A built-in ZigBee &amp; BLE mesh gateway connects up to 100+ ZigBee devices and runs local scenes, even without the cloud.</p><ul><li><b>Protocols</b>ZigBee · BLE</li><li><b>Devices</b>100+</li></ul></article>
+        <article class="feat" aria-live="polite"><span class="num">04 / 06 · Video intercom</span><h2>Call &<br>unlock</h2><p>Compatible with the Simon villa door station: answer calls and unlock the door directly from the screen.</p><ul><li>Call</li><li>Unlock</li></ul></article>
+        <article class="feat" aria-live="polite"><span class="num">05 / 06 · App control</span><h2>Control<br>anywhere</h2><p>The same home in your pocket: devices in the Simon Smart app are controlled on the screen and from anywhere, with the ZigBee gateway enabling localized scenes.</p><ul><li>Simon Smart app</li><li>Remote control</li></ul></article>
         <article class="feat" aria-live="polite"><span class="num">06 / 06 · Hardware advantages</span><h2>Quad-core,<br>ample storage</h2><p>A powerful quad-core processor provides robust processing power for stable and smooth operation, with ample storage to accommodate more apps.</p><ul><li><b>Processor</b>Quad-core</li><li><b>Storage</b>Ample</li></ul></article>
         </div>
         <div class="feat-nav" role="group" aria-label="Features"><button type="button" aria-label="Feature 1: Simple smart home">1</button><button type="button" aria-label="Feature 2: Smart control">2</button><button type="button" aria-label="Feature 3: ZigBee &amp; BLE">3</button><button type="button" aria-label="Feature 4: Video intercom">4</button><button type="button" aria-label="Feature 5: App control">5</button><button type="button" aria-label="Feature 6: Hardware advantages">6</button></div>
@@ -86,34 +86,165 @@
   <section id="gallery" class="p-gallery" data-mode="hidden">
     <div class="p-gal-head reveal"><h2 class="display">Smart home,<br>made simple</h2><p class="eyebrow">From the Simon catalog</p></div>
     <div class="p-gal-grid">
-      <figure class="g-a reveal"><img src="assets/img/hp-features.jpg" alt="Smart control, ZigBee and BLE, video intercom and app control" loading="lazy"></figure>
-      <figure class="g-b reveal"><img src="assets/img/hp-ui.jpg" alt="Homepad interface screens" loading="lazy"></figure>
-      <figure class="g-c reveal"><img src="assets/img/hp-hardware.jpg" alt="Simon Smart hardware advantages" loading="lazy"></figure>
+      <figure class="g-a reveal"><img src="assets/img/apac/hp-pro10.jpg" alt="10-inch Homepad Pro in a double-height living room" loading="lazy"></figure>
+      <figure class="g-b reveal"><img src="assets/img/apac/hp-ui10.jpg" alt="Homepad Pro, Simpad and Simon smart switches on one wall" loading="lazy"></figure>
+      <figure class="g-c reveal"><img src="assets/img/hp-features.jpg" alt="Smart control, ZigBee and BLE, video intercom and app control" loading="lazy"></figure>
     </div>
   </section>
 
-  <section id="simpad" class="hp-simpad" data-mode="hidden">
-    <div class="hp-simpad-img reveal"><img src="assets/img/hp-simpad.jpg" alt="Simon Simpad on a wall" loading="lazy"></div>
-    <div class="hp-simpad-copy reveal">
-      <p class="eyebrow">Also in Simon Smart</p>
-      <h2 class="display">Simpad</h2>
-      <p class="body">The compact smart panel — clock, weather and quick controls in a small square format that sits with your switches.</p>
-      <a class="btn btn-ghost" href="index.html#showroom">Ask at our showroom</a>
+  <section id="models" class="hp-models" data-mode="hidden">
+    <header class="hp-models-head reveal"><p class="eyebrow">Smart control panels</p><h2 class="display">Choose your panel</h2></header>
+    <div class="hp-model-grid">
+      <article class="hp-model reveal"><figure class="hp-gal"><img src="assets/img/apac/hp-pro10.jpg" alt="10-inch Homepad Pro" loading="lazy"></figure>
+        <div><p class="eyebrow">10-inch</p><h3>Homepad Pro</h3><p>Smart control for the whole house with a ZigBee &amp; BLE gateway, screen-to-screen calling and the villa intercom.</p>
+        <dl><div><dt>Size</dt><dd>259 × 161 × 13 mm (without base)</dd></div><div><dt>Power</dt><dd>100–240 VAC, 50/60 Hz · live + neutral</dd></div><div><dt>Network</dt><dd>Wi-Fi · Ethernet</dd></div><div><dt>Communication</dt><dd>Wi-Fi · BLE mesh · ZigBee</dd></div><div><dt>Gateway</dt><dd>Up to 100+ ZigBee devices</dd></div><div><dt>Environment</dt><dd>0–40 °C · 5–90% RH</dd></div></dl></div></article>
+      <article class="hp-model reveal"><figure class="hp-gal"><img src="assets/img/apac/hp-pro8.jpg" alt="8-inch Homepad Pro" loading="lazy"></figure>
+        <div><p class="eyebrow">8-inch</p><h3>Homepad Pro</h3><p>One panel for switches, lights, curtains and air conditioners, with a ZigBee &amp; BLE gateway — and online Spotify music on the panel.</p>
+        <dl><div><dt>Size</dt><dd>127.5 × 233.5 × 38 mm</dd></div><div><dt>Power</dt><dd>100–240 VAC, 50/60 Hz</dd></div><div><dt>Network</dt><dd>Wi-Fi · Ethernet</dd></div><div><dt>Communication</dt><dd>Wi-Fi · BLE mesh · ZigBee</dd></div><div><dt>Gateway</dt><dd>Up to 100+ ZigBee devices</dd></div><div><dt>Environment</dt><dd>0–40 °C · 5–90% RH</dd></div></dl></div></article>
     </div>
+    <article class="hp-intercom reveal"><figure class="hp-gal"><img src="assets/img/apac/hp-intercom.jpg" alt="Homepad Pro villa intercom system diagram" loading="lazy"></figure>
+      <div><p class="eyebrow">Intercom solution</p><h3>Villa door station</h3><p>Connect the optional villa door station (PoE) to your Homepad Pro panels: answer calls and unlock from any screen.</p>
+      <ul class="hp-list"><li>Magnetic and electric locks</li><li>Unlock from switch-panel input signals</li><li>IC card unlocking</li><li>App control</li></ul>
+      <dl><div><dt>Power</dt><dd>PoE or 12 V DC</dd></div><div><dt>Size</dt><dd>88 × 168 × 32.5 mm</dd></div><div><dt>Environment</dt><dd>0–40 °C · 5–90% RH</dd></div></dl></div></article>
+  </section>
+
+  <section id="simpad" class="sp" data-mode="hidden">
+    <div class="sp-hero">
+      <div class="sp-hero-copy reveal">
+        <p class="eyebrow">Simon Smart · also on the wall</p>
+        <h2 class="display">Simpad</h2>
+        <p class="sp-lead">Empower your home with a smart 4-inch multi-control panel with gateway.</p>
+        <ul class="sp-icons">
+          <li><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Scene control</li>
+          <li><svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="10" y="3" width="5" height="5" rx="1"/><rect x="17" y="3" width="4" height="5" rx="1"/><rect x="3" y="10" width="5" height="5" rx="1"/><rect x="10" y="10" width="5" height="5" rx="1"/><rect x="17" y="10" width="4" height="5" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>Multi-control</li>
+          <li><svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M7 5h10M6 7l5 10M18 7l-5 10"/></svg>Built-in gateway</li>
+          <li><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Intercom service</li>
+          <li><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>Alexa speaker built-in option</li>
+        </ul>
+      </div>
+      <div class="sp-duo reveal" aria-hidden="true">
+        <img class="sp-w" src="assets/img/apac/sp-white.png" alt="" loading="lazy">
+        <img class="sp-b" src="assets/img/apac/sp-black.png" alt="" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sp-grid">
+      <article class="sp-card reveal">
+        <p class="eyebrow">For everyone</p><h3>Easy smart home control</h3>
+        <p>In-wall switch replacement, one panel, multiple uses. One smart touchscreen panel makes it easy for everyone at home to control smart switches, lights, curtains, air conditioners, Alexa speaker, and all other smart home devices.</p>
+      </article>
+      <article class="sp-card reveal">
+        <p class="eyebrow">Smart and concise</p><h3>Make your home smart and concise</h3>
+        <p>Customize various scenes to perfectly align with your lifestyle, seamlessly integrating with your smart home appliances. Say goodbye to the hassle of searching for air conditioner remote controls and dealing with multiple switches.</p>
+        <ul class="sp-chips"><li>Control smart switches</li><li>Control smart curtains</li><li>Control smart lighting</li><li>Control smart thermostat</li><li>Control video doorbells</li></ul>
+      </article>
+      <article class="sp-card reveal">
+        <p class="eyebrow">One key</p><h3>Smart scene one-key control</h3>
+        <p>Create personalized scenes in the App to effortlessly manage multiple switches. Add switches as needed to each scene and enjoy the convenience of controlling all with just one click.</p>
+      </article>
+    </div>
+
+    <div class="sp-split">
+      <article class="sp-card sp-gw reveal">
+        <p class="eyebrow">Built-in gateway</p><h3>Zigbee &amp; BLE SigMesh Gateway</h3>
+        <ul class="sp-dots"><li>Built-in Zigbee gateway, support 100+ sub-devices to access the network, remote OTA upgrade</li><li>Built-in BLE SigMesh gateway</li><li>Support cross-protocol and cross-gateway local linkage</li></ul>
+      </article>
+      <article class="sp-card sp-local reveal">
+        <p class="eyebrow">Works locally</p><h3>Even without the network</h3>
+        <ul class="sp-checks"><li>Device control without network</li><li>Tap-to-Run without network</li><li>Pairing devices without Mobile APP</li><li>Group control without network</li><li>Automation logic executes at the edge</li></ul>
+      </article>
+    </div>
+
+    <div class="sp-voice reveal">
+      <div class="sp-voice-head"><p class="eyebrow">Alexa built-in</p><h3>Your Voice, Your Home – Simpad with Alexa Speaker Built-In!</h3><p>Embrace the future of seamless and hands-free control.</p></div>
+      <div class="sp-orb" aria-hidden="true"><i></i></div>
+      <ul class="sp-says">
+        <li style="--x:8%;--y:14%;--d:0s">Open the curtains for me at nine o'clock tomorrow morning</li>
+        <li style="--x:62%;--y:8%;--d:.6s">Help me adjust the temperature to 25 degrees</li>
+        <li style="--x:70%;--y:44%;--d:1.2s">Help me turn on queuing mode</li>
+        <li style="--x:4%;--y:56%;--d:1.8s">How's the weather today</li>
+        <li style="--x:58%;--y:74%;--d:2.4s">Turn off the living room light for me in 30 minutes</li>
+        <li style="--x:12%;--y:86%;--d:3s">Help me turn on the fresh air system and close the curtains</li>
+        <li style="--x:46%;--y:94%;--d:3.6s">Alexa, turn on all the lights in the living room for me</li>
+      </ul>
+    </div>
+
+    <div class="sp-split">
+      <article class="sp-card sp-door reveal">
+        <div class="sp-door-ui" aria-hidden="true"><b>Smart Doorbell</b><span class="cam"></span><span class="no"></span><span class="yes"></span></div>
+        <div><p class="eyebrow">Intercom</p><h3>Smart doorbell experience with Simpad</h3>
+        <p>With Simpad, answer your doorbell smartly – no phone required. Simpad let everyone at home easily see who's at the door and engage in two-way conversations effortlessly. Embrace the convenience of communication and enhanced security.</p></div>
+      </article>
+      <article class="sp-card reveal">
+        <p class="eyebrow">Anytime, anywhere</p><h3>App Control and Voice Control</h3>
+        <p>Anytime anywhere, control the smart Home through Simon smart app. Control the Smart Home through your voice with Siri, Alexa and Google Home.</p>
+        <ul class="sp-chips"><li>Simon Smart app</li><li>Siri</li><li>Alexa</li><li>Google Home</li></ul>
+      </article>
+    </div>
+
+    <div class="sp-powered reveal">
+      <div><p class="eyebrow">Powered by Simon smart</p><h3>Can be controlled by Simpad and app</h3><p>Covering 8 categories, about 2,700 product series, more than 600,000 SKU.</p></div>
+      <ul class="sp-stats"><li><b>8</b>categories</li><li><b>~2,700</b>product series</li><li><b>600,000+</b>SKU</li></ul>
+      <ul class="sp-cats"><li>Energy saving</li><li>Fitness &amp; health</li><li>Electrical &amp; lighting</li><li>Security &amp; sensors</li><li>Home appliances</li><li>Industrial &amp; agriculture</li><li>Education &amp; entertainment</li></ul>
+    </div>
+
+    <div class="sp-split">
+      <article class="sp-card reveal">
+        <p class="eyebrow">OS 4.0</p><h3>User friendly and practical interactive experience</h3>
+        <p>With just one click, execute scenes with ease, seamlessly connect devices to the network, and enjoy smooth voice interactions. Our user-friendly interface ensures an immersive and enjoyable interactive experience like never before.</p>
+      </article>
+      <article class="sp-card reveal">
+        <p class="eyebrow">Device and scene</p><h3>The most frequent interactions, made simple</h3>
+        <p>Device control and scene execution are the most frequent interactions in smart home. The proprietary OS supports room area management, device quick control and fine interaction, and supports one-click execution of scenes.</p>
+        <dl class="sp-dl"><div><dt>Quick Control</dt><dd>Through the device shortcut switch, you can quickly control without entering the operation page</dd></div><div><dt>Fine-grained interaction</dt><dd>Reconstruct the interactive form for each type of equipment to achieve refined control</dd></div><div><dt>Smart scene</dt><dd>One-click execution of preset scenes without frequent operations</dd></div><div><dt>Room management</dt><dd>Supports equipment management in different room areas, which is convenient for searching and controlling</dd></div></dl>
+      </article>
+    </div>
+
+    <div class="sp-hw reveal">
+      <h3>Powerful hardware configuration</h3>
+      <div class="sp-hw-grid">
+        <dl class="sp-hw-l"><div><dt>Display</dt><dd>4-inch high-definition touch screen, AE coating anti-fingerprint, 480*480</dd></div><div><dt>Chip platform</dt><dd>Quad-core ARM Cortex™-A35, 1.5GHz</dd></div><div><dt>Memory</dt><dd>Flash 256MB · DDR 256MB</dd></div></dl>
+        <img src="assets/img/apac/sp-black.png" alt="Simon Simpad 4-inch panel" loading="lazy">
+        <dl class="sp-hw-r"><div><dt>Dual Mic Array</dt><dd>Symmetric Noise Reduction</dd></div><div><dt>Speaker</dt><dd>AAC 1813 Speaker</dd></div></dl>
+      </div>
+    </div>
+
+    <div class="sp-split">
+      <article class="sp-card reveal">
+        <p class="eyebrow">Installation</p><h3>Easy installation and network configuration</h3>
+        <p>Compatible with Standard 86mm bottom box. Seamless replacement of existing switch and sockets.</p>
+        <p>[Scan QR Code Configuration] only one key to scan code, complete configuration, simple operation, stable, reliable.</p>
+      </article>
+      <article class="sp-card reveal">
+        <p class="eyebrow">Versions</p><h3>Two Simpad versions</h3>
+        <table class="sp-table"><thead><tr><th></th><th>Black</th><th>White</th></tr></thead><tbody>
+          <tr><td>Product</td><td>Simpad with gateway</td><td>Simpad with gateway</td></tr>
+          <tr><td>Built-in speaker</td><td>Alexa speaker</td><td>—</td></tr>
+          <tr><td>System</td><td>Linux</td><td>Android</td></tr>
+          <tr><td>Gateway</td><td>ZigBee, BLE SigMesh</td><td>ZigBee</td></tr>
+          <tr><td>Communication</td><td colspan="2">Wi-Fi</td></tr>
+          <tr><td>Power supply</td><td colspan="2">100-240VAC, 50/60Hz</td></tr>
+          <tr><td>Size</td><td colspan="2">86 × 86 × 10.5 mm (without the base)</td></tr>
+        </tbody></table>
+      </article>
+    </div>
+    <p class="sp-cta reveal"><a class="btn btn-ghost" href="index.html#showroom">Ask at our showroom</a></p>
   </section>
 
   <section id="specs" class="p-specs" data-mode="hidden">
     <h2 class="display">Technical specs</h2>
     <div class="spec-grid">
       <dl class="spec-col">
-        <div class="spec-row"><dt>Model</dt><dd>Homepad Pro Max · Simpad</dd></div>
-        <div class="spec-row"><dt>Protocols</dt><dd>ZigBee &amp; BLE · up to 100+ devices</dd></div>
+        <div class="spec-row"><dt>Models</dt><dd>10-inch &amp; 8-inch Homepad Pro</dd></div>
+        <div class="spec-row"><dt>Communication</dt><dd>Wi-Fi · BLE mesh · ZigBee · Ethernet (Homepad Pro)</dd></div>
+        <div class="spec-row"><dt>Gateway</dt><dd>Up to 100+ ZigBee devices</dd></div>
         <div class="spec-row"><dt>Ecosystems</dt><dd>Zigbee · Tuya · Apple Home · Matter</dd></div>
       </dl>
       <dl class="spec-col">
         <div class="spec-row"><dt>Processor</dt><dd>Powerful quad-core</dd></div>
-        <div class="spec-row"><dt>Storage</dt><dd>Ample storage for more apps</dd></div>
-        <div class="spec-row"><dt>Functions</dt><dd>Smart control · Video intercom (call &amp; unlock) · App control</dd></div>
+        <div class="spec-row"><dt>Power</dt><dd>100–240 VAC, 50/60 Hz</dd></div>
+        <div class="spec-row"><dt>Environment</dt><dd>0–40 °C · 5–90% RH</dd></div>
+        <div class="spec-row"><dt>Functions</dt><dd>Smart control · Screen-to-screen calling · Villa intercom (call &amp; unlock) · App control · Local scenes</dd></div>
       </dl>
     </div>
   </section>
@@ -160,5 +291,6 @@
 <script src="js/vendor/lenis.min.js"></script>
 <script src="js/switch3d.js"></script>
 <script src="js/homepad.js"></script>
+<script src="js/lightbox.js"></script>
 </body>
 </html>

@@ -91,3 +91,30 @@ body.blueprint .grid-bg { opacity: 1; }
   .sensor { grid-template-columns: 96px minmax(0, 1fr); }
   .s-scene { grid-column: 1 / -1; }
 }
+/* docking family (official kits) */
+.dk-sec { position: relative; z-index: 7; padding: 12vh var(--gutter); background: #0b0b0d; border-top: 1px solid var(--line); }
+.dk-banner { margin: 0 0 8vh; border-radius: 10px; overflow: hidden; }
+.dk-banner img { width: 100%; display: block; cursor: zoom-in; }
+.dk-family { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.4vw; margin-top: 5vh; }
+.dk-card, .dk-switch { background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.dk-card figure, .dk-switch figure { margin: 0; background: #111; }
+.dk-card figure img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; cursor: zoom-in; }
+.dk-wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1.6fr 1fr; align-items: center; }
+.dk-wide figure img { aspect-ratio: auto; object-fit: contain; }
+.dk-text { justify-content: center; background: radial-gradient(120% 90% at 20% 0%, rgba(255,214,150,0.12), rgba(255,255,255,0.03) 60%); }
+.dk-card > div, .dk-switch > div { padding: 22px 22px 26px; }
+.dk-card h3, .dk-switch h3 { font-size: clamp(22px, 2vw, 30px); margin: 6px 0 10px; font-weight: 600; }
+.dk-card p:not(.eyebrow), .dk-switch p:not(.eyebrow) { color: var(--ink-2, #b9b9be); font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
+.hp-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.hp-chips li { font-size: 12.5px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; }
+.dk-switch { margin-top: 2.4vw; display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; }
+.dk-switch > figure img { width: 100%; display: block; cursor: zoom-in; }
+.dk-switch-prod { border-radius: 8px; overflow: hidden; margin-bottom: 18px !important; }
+.dk-switch-prod img { width: 100%; display: block; cursor: zoom-in; }
+.dk-real-head { margin-top: 10vh; }
+.dk-real { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4vw; margin-top: 5vh; }
+.dk-real figure { margin: 0; border-radius: 10px; overflow: hidden; }
+.dk-real img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; cursor: zoom-in; }
+@media (max-width: 760px) {
+  .dk-family, .dk-wide, .dk-switch, .dk-real { grid-template-columns: 1fr; }
+}

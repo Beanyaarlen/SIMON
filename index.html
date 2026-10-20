@@ -37,6 +37,17 @@
 <div class="progress" aria-hidden="true"><span></span></div>
 
 <!-- 3D stage + projected labels -->
+<!-- one continuous backdrop for the whole page: layers cross-fade with the scroll -->
+<div id="backdrop" aria-hidden="true">
+  <div class="bd" data-bd="ribbon"><img src="assets/img/bg-ribbon.jpg" alt=""></div>
+  <div class="bd" data-bd="wave"><img src="assets/img/bg-wave.jpg" alt=""></div>
+  <div class="bd" data-bd="studio"></div>
+  <div class="bd" data-bd="ribbon2"><img src="assets/img/bg-ribbon2.jpg" alt=""></div>
+  <div class="bd" data-bd="wave2"><img src="assets/img/bg-wave2.jpg" alt=""></div>
+  <div class="bd" data-bd="interior"><img src="assets/img/interior-2.jpg" alt=""></div>
+  <div class="bd-vignette"></div>
+  <img class="bd-floor" src="assets/img/flat-surface.jpg" alt="">
+</div>
 <canvas id="gl" aria-hidden="true"></canvas>
 <img id="glFallback" src="assets/img/hero-switch.png" alt="Simon i7 4-gang push button switch, Dark Grey" hidden>
 <div id="overlay" aria-hidden="true">
@@ -59,7 +70,6 @@
 
   <!-- ============ 1. HERO ============ -->
   <section id="hero" class="sec hero" data-sec="hero">
-    <div class="bg"><img src="assets/img/bg-ribbon.jpg" alt=""></div>
     <div class="hero-badge"><img src="assets/img/badge-spain.png" alt="Brand of Spain"></div>
     <div class="slot" data-slot="hero"></div>
     <div class="hero-copy">
@@ -79,7 +89,6 @@
   <!-- ============ 2. HELLO PUSH BUTTON ============ -->
   <section id="hello" class="pin" data-sec="hello" style="--h:230">
     <div class="stick">
-      <div class="bg dim"><img src="assets/img/bg-wave.jpg" alt=""></div>
       <div class="hello-wrap">
         <div class="slot" data-slot="hello"></div>
         <div class="hello-side">
@@ -99,7 +108,6 @@
   <!-- ============ 3. ANATOMY / EXPLODED ============ -->
   <section id="anatomy" class="pin" data-sec="anatomy" style="--h:560">
     <div class="stick">
-      <div class="bg anatomy-bg"><img class="flat-img" src="assets/img/flat-surface.jpg" alt=""></div>
       <div class="steps" data-steps="0,0.5,0.74">
         <article class="step">
           <p class="eyebrow">Inside the i7</p>
@@ -127,7 +135,6 @@
   <!-- ============ 4. COMPLETE DESIGN LANGUAGE ============ -->
   <section id="language" class="pin" data-sec="language" style="--h:500">
     <div class="stick">
-      <div class="bg dim"><img src="assets/img/bg-ribbon2.jpg" alt=""></div>
       <div class="lang-layout">
         <header class="lang-head step-in" data-in="0.0">
           <p class="eyebrow">More than a switch</p>
@@ -156,7 +163,6 @@
   <!-- ============ 6. THE NEXT REVOLUTION ============ -->
   <section id="revolution" class="pin" data-sec="revolution" style="--h:240">
     <div class="stick">
-      <div class="bg dim"><img src="assets/img/bg-wave2.jpg" alt=""></div>
       <div class="rev-layout">
         <header class="rev-head step-in" data-in="0.0">
           <p class="eyebrow">A new era begins</p>
@@ -184,7 +190,6 @@
   <!-- ============ 7. DESIGNED FOR EVERY SPACE ============ -->
   <section id="space" class="pin" data-sec="space" style="--h:330">
     <div class="stick">
-      <div class="bg dim"><img src="assets/img/bg-ribbon.jpg" alt=""></div>
       <div class="tint" aria-hidden="true"></div>
       <div class="space-layout">
       <div class="slot" data-slot="space"></div>
@@ -240,7 +245,6 @@
   <!-- ============ 9. UPGRADE ANYTIME ============ -->
   <section id="upgrade" class="pin" data-sec="upgrade" style="--h:460">
     <div class="stick">
-      <div class="bg dim"><img src="assets/img/interior-2.jpg" alt=""></div>
       <div class="up-layout">
         <div class="up-top">
           <header class="up-head">
@@ -294,9 +298,6 @@
         <a class="card card-link" href="simon-homepad.html"><div class="ph"><img src="assets/img/smart-home.jpg" alt="Homepad Pro Max smart home panel" loading="lazy"></div>
           <p class="tag">Simple Smart Home</p><h3>Homepad Pro Max</h3><p class="tl">Simple installations · Simple to use · Simple budget</p>
           <p class="meta">Zigbee · smart control · scenes</p><span class="go">Explore Homepad →</span></a>
-        <a class="card card-link" href="simon-scene.html"><div class="ph"><img src="assets/img/scene-studio.jpg" alt="Bedroom lit by a Simon smart lighting scene" loading="lazy"></div>
-          <p class="tag">Simon Smart · Try it</p><h3>Scene Studio</h3><p class="tl">Set the mood. Save the scene.</p>
-          <p class="meta">Dimmer · finishes · scene buttons A–D</p><span class="go">Try the studio →</span></a>
       </div>
       <div class="lu-progress"><span></span></div>
       <div class="lu-nav"><button type="button" data-lu="-1" aria-label="Previous series">&#8592;</button><button type="button" data-lu="1" aria-label="Next series">&#8594;</button></div>
@@ -305,7 +306,6 @@
 
   <!-- ============ 11. CTA ============ -->
   <section id="cta" class="sec cta" data-sec="cta">
-    <div class="bg dim"><img src="assets/img/bg-wave.jpg" alt=""></div>
     <h2 class="cta-title reveal"><span class="display">Make the Innovation</span><span class="wide">for your home</span></h2>
     <div class="cta-actions reveal">
       <a class="btn btn-solid" href="#showroom">Visit a showroom</a>

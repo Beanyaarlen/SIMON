@@ -58,7 +58,7 @@
   let dirty = true;
 
   /* ---------------- screen UI (canvas) ---------------- */
-  const SW = 1280, SH = 860;
+  const SW = 1280, SH = 720;  // Homepad Pro display area: 237 × 133 mm
   function makeScreen(w, h) {
     const c = document.createElement('canvas'); c.width = w; c.height = h;
     const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 4;
@@ -108,15 +108,19 @@
     const x = s.x, hits = [];
     const bg = x.createLinearGradient(0, 0, SW, SH); bg.addColorStop(0, '#0d1a33'); bg.addColorStop(1, '#05070d');
     x.fillStyle = bg; x.fillRect(0, 0, SW, SH);
+    // left rail (as on the panel): home · devices · scenes · music · apps, Alexa at the bottom
+    x.fillStyle = 'rgba(0,0,0,0.35)'; x.fillRect(0, 0, 96, SH);
+    ['⌂', '▤', '✓', '♪', '▦'].forEach((ic, i) => { x.fillStyle = i === 0 ? '#fff' : 'rgba(255,255,255,0.45)'; x.font = F(600, 34); x.textAlign = 'center'; x.fillText(ic, 48, 92 + i * 96); x.textAlign = 'left'; });
+    x.strokeStyle = '#2fd3f5'; x.lineWidth = 8; x.beginPath(); x.arc(48, SH - 62, 26, 0, 7); x.stroke();
     const [tm, dt] = clockStr();
-    x.fillStyle = '#fff'; x.font = F(700, 64); x.fillText(tm, 48, 92);
-    x.font = F(400, 26); x.fillStyle = 'rgba(255,255,255,0.65)'; x.fillText(`${dt} · Living room`, 52, 132);
+    x.fillStyle = '#fff'; x.font = F(700, 64); x.fillText(tm, 128, 92);
+    x.font = F(400, 26); x.fillStyle = 'rgba(255,255,255,0.65)'; x.fillText(`${dt} · Living room`, 132, 132);
     // intercom shortcut
     rr(x, SW - 250, 46, 200, 64, 32); x.fillStyle = 'rgba(255,255,255,0.1)'; x.fill();
     x.fillStyle = '#fff'; x.font = F(600, 26); x.fillText('◉  Door', SW - 210, 88);
     hits.push({ r: [SW - 250, 46, 200, 64], fn: () => { S.call = 'ringing'; screenMode = 'intercom'; userMode = 'intercom'; } });
     // tiles
-    const G = 22, X0 = 48, Y0 = 170, TW = (SW - X0 * 2 - G * 3) / 4, TH = 230;
+    const G = 20, X0 = 128, XR = 40, Y0 = 162, TW = (SW - X0 - XR - G * 3) / 4, TH = 214;
     const L = [['living', 'Living', '☀'], ['bedroom', 'Bedroom', '☀'], ['kitchen', 'Kitchen', '☀']];
     L.forEach(([k, n, ic], i) => {
       const X = X0 + i * (TW + G);
@@ -143,7 +147,7 @@
     x.beginPath(); x.arc(S.ac.on ? X0 + CW - 53 : X0 + CW - 95, Y1 + 55, 19, 0, 7); x.fillStyle = '#fff'; x.fill();
     hits.push({ r: [X0 + CW - 120, Y1 + 30, 92, 50], fn: () => { S.ac.on = !S.ac.on; S.scene = null; } });
     // scenes
-    const SX = X0 + CW + G, SWd = SW - SX - X0;
+    const SX = X0 + CW + G, SWd = SW - SX - XR;
     x.fillStyle = '#fff'; x.font = F(650, 30); x.fillText('Scenes', SX + 6, Y1 + 34);
     Object.entries(SCENES).forEach(([k, sc], i) => {
       const BY = Y1 + 54 + i * 60, on = S.scene === k;
@@ -154,7 +158,7 @@
     // status bar
     const Y2 = Y1 + TH + G;
     x.fillStyle = 'rgba(255,255,255,0.55)'; x.font = F(400, 24);
-    x.fillText(`ZigBee & BLE · ${countOn()} lights on · ${S.ac.on ? 'AC ' + S.ac.temp + '°C' : 'AC off'} · curtains ${S.curtain > 0.5 ? 'open' : 'closed'}`, 52, Y2 + 30);
+    x.fillText(`ZigBee & BLE · ${countOn()} lights on · ${S.ac.on ? 'AC ' + S.ac.temp + '°C' : 'AC off'} · curtains ${S.curtain > 0.5 ? "open" : "closed"}`, X0, Y2 + 30);
     s.hits = hits;
   }
   function drawIntercom(s, t) {
@@ -193,6 +197,31 @@
     x.fillStyle = '#fff'; x.font = F(800, 150); x.textAlign = 'center'; x.fillText('100+', SW / 2, SH / 2 + 30);
     x.font = F(400, 34); x.fillStyle = 'rgba(255,255,255,0.75)'; x.fillText('ZigBee & BLE devices on one panel', SW / 2, SH / 2 + 95); x.textAlign = 'left';
   }
+  function drawSystem(s, t) {
+    const x = s.x; s.hits = [];
+    x.fillStyle = '#05070c'; x.fillRect(0, 0, SW, SH);
+    x.fillStyle = 'rgba(255,255,255,0.6)'; x.font = F(600, 24); x.fillText('SYSTEM', 128, 120);
+    // four cores working together
+    x.fillStyle = '#fff'; x.font = F(800, 64); x.fillText('Quad-core', 128, 200);
+    for (let i = 0; i < 4; i++) {
+      const X = 128 + i * 120, H0 = 190, v = 0.35 + 0.3 * (0.5 + 0.5 * Math.sin(t * 2.2 + i * 1.7));
+      rr(x, X, 250, 90, H0, 16); x.fillStyle = 'rgba(255,255,255,0.08)'; x.fill();
+      rr(x, X, 250 + H0 * (1 - v), 90, H0 * v, 16); x.fillStyle = '#7fb4ff'; x.fill();
+      x.fillStyle = 'rgba(255,255,255,0.7)'; x.font = F(500, 20); x.textAlign = 'center'; x.fillText('Core ' + (i + 1), X + 45, 475); x.textAlign = 'left';
+    }
+    x.fillStyle = 'rgba(255,255,255,0.75)'; x.font = F(400, 24); x.fillText('Stable and smooth operation', 128, 530);
+    // ample storage for more apps
+    const R = 700;
+    x.fillStyle = '#fff'; x.font = F(800, 64); x.fillText('Storage', R, 200);
+    rr(x, R, 232, 450, 22, 11); x.fillStyle = 'rgba(255,255,255,0.1)'; x.fill();
+    rr(x, R, 232, 450 * 0.32, 22, 11); x.fillStyle = '#9fe0b4'; x.fill();
+    x.fillStyle = 'rgba(255,255,255,0.75)'; x.font = F(400, 24); x.fillText('Ample room for more apps', R, 290);
+    const cols = ['#ff9f6b', '#7fb4ff', '#9fe0b4', '#f5d36b', '#c9a0ff', '#ff7f9e', '#6be0e0', '#e6e6e6'];
+    for (let i = 0; i < 8; i++) {
+      const X = R + (i % 4) * 116, Y = 330 + Math.floor(i / 4) * 116, pop = Math.min(1, Math.max(0, (t * 1.5) % 6 - i * 0.25));
+      x.globalAlpha = 0.25 + 0.75 * pop; rr(x, X, Y, 92, 92, 24); x.fillStyle = cols[i]; x.fill(); x.globalAlpha = 1;
+    }
+  }
   function drawToast(s) {
     if (S.toastT <= 0) return;
     const x = s.x, a = Math.min(1, S.toastT * 2), ty = screenMode === 'intercom' ? 110 : SH - 110;
@@ -204,6 +233,7 @@
     if (screenMode === 'clock') drawClock(scr, t);
     else if (screenMode === 'intercom') drawIntercom(scr, t);
     else if (screenMode === 'network') drawNetwork(scr, t);
+    else if (screenMode === 'system') drawSystem(scr, t);
     else drawDash(scr, t);
     drawToast(scr);
     scr.tex.needsUpdate = true;
@@ -222,30 +252,48 @@
   /* ---------------- 3D: Homepad Pro Max ---------------- */
   const root = new T.Group(); scene.add(root);
   const dev = new T.Group(); root.add(dev);
-  const PW = 15.6, PH = 10.6, D = 0.9;
-  const bodyMat = new T.MeshPhysicalMaterial({ color: 0xc9ccd1, metalness: 0.85, roughness: 0.32, clearcoat: 0.3 });
-  const glassMat = new T.MeshPhysicalMaterial({ color: 0x050506, roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.3 });
-  const housing = new T.Mesh(keyGeometry(PW, PH, D, 0.45, 0.08), bodyMat); housing.position.z = -0.02; dev.add(housing);
-  const glassG = keyGeometry(13.2, PH - 0.12, 0.08, 0.35, 0.02); glassG.translate(-(PW - 13.2) / 2 + 0.06, 0, 0.06);
+  /* Homepad Pro (Max) as installed: 259 × 161 × 13 mm — a black glass front in a thin gunmetal
+     rim on a dark back body, with a separate champagne key strip on the right: two rockers,
+     each with two "•••" press points. Scene scale: 1 mm = SC units. */
+  const MM = 15.6 / 275;                      // panel 259 mm + strip 16 mm
+  const BW = 259 * MM, BH = 161 * MM, BD = 13 * MM;
+  const PW = 15.6, PH = BH;
+  const BX = -PW / 2 + BW / 2;                // panel centre x
+  const bodyMat = new T.MeshPhysicalMaterial({ color: 0x7d8086, metalness: 0.85, roughness: 0.35, clearcoat: 0.25 });   // gunmetal rim
+  const backMat = new T.MeshStandardMaterial({ color: 0x2c2d31, metalness: 0.4, roughness: 0.6 });                      // back body
+  const glassMat = new T.MeshPhysicalMaterial({ color: 0x040405, roughness: 0.04, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.4 });
+  const housing = new T.Group(); housing.position.set(BX, 0, 0); dev.add(housing);
+  housing.add(new T.Mesh(keyGeometry(BW, BH, BD * 0.42, 0.12, 0.03), bodyMat));                                         // metal rim
+  { const b = new T.Mesh(keyGeometry(BW - 0.25, BH - 0.25, BD * 0.62, 0.1, 0.03), backMat); b.position.z = -BD * 0.38; housing.add(b); }
+  const glassG = keyGeometry(BW - 2.4 * MM, BH - 2.4 * MM, 0.045, 0.1, 0.012); glassG.translate(BX, 0, 0.045);
   const glass = new T.Mesh(glassG, glassMat); dev.add(glass);
-  const screen = new T.Mesh(new T.PlaneGeometry(12.4, 12.4 * SH / SW), new T.MeshBasicMaterial({ map: scr.tex, toneMapped: false }));
-  screen.position.set(-(PW - 13.2) / 2 + 0.06, 0, 0.075); dev.add(screen);
-  // side keys (three physical buttons on the right strip)
+  // top bezel: camera, sensors and microphone holes
+  { const sens = new T.MeshPhysicalMaterial({ color: 0x17181c, roughness: 0.15, metalness: 0.5, clearcoat: 1 });
+    const yb = BH / 2 - 8.5 * MM;
+    [[-62, 1.4], [-38, 2.6], [-28, 1.4], [-8, 1.4], [22, 1.4]].forEach(([xm, r]) => { const d = new T.Mesh(new T.CircleGeometry(r * MM, 18), sens); d.position.set(xm * MM, yb, 0.002); glass.add(d); });
+    const ring = new T.Mesh(new T.RingGeometry(2.6 * MM, 3.4 * MM, 24), new T.MeshBasicMaterial({ color: 0x3a3d44 })); ring.position.set(-38 * MM, yb, 0.003); glass.add(ring);
+    const pill = new T.Mesh(keyGeometry(7 * MM, 2.6 * MM, 0.002, 1.2 * MM, 0.0005), sens); pill.position.set(36 * MM, yb, 0.004); glass.add(pill); }
+  // display area 237 × 133 mm: 11 mm side bezels, 17 mm top, 12 mm bottom
+  const SWu = 237 * MM, SHu = 133 * MM;
+  const screen = new T.Mesh(new T.PlaneGeometry(SWu, SHu), new T.MeshBasicMaterial({ map: scr.tex, toneMapped: false }));
+  screen.position.set(BX, -2.5 * MM, 0.047); dev.add(screen);
+  // key strip: 16 × 134 mm, two rockers, each with two "•••" marks
   const keys = [];
-  [-1, 0, 1].forEach((i) => {
-    const k = new T.Mesh(keyGeometry(1.55, 3.0, 0.16, 0.2, 0.03), bodyMat); k.position.set(PW / 2 - 1.12, i * 3.25, 0.1); dev.add(k); keys.push(k);
-    const dot = new T.Mesh(new T.CircleGeometry(0.07, 12), new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false })); dot.position.set(PW / 2 - 1.12, i * 3.25, 0.115); dev.add(dot);
-  });
-  // internals for the hardware step
-  const pcb = new T.Group(); dev.add(pcb);
-  { const b = new T.Mesh(keyGeometry(12.6, 8.4, 0.12, 0.3, 0.02), new T.MeshPhysicalMaterial({ color: 0x0f2219, roughness: 0.45, clearcoat: 0.6 })); pcb.add(b);
-    const chip = new T.Mesh(keyGeometry(2.4, 2.4, 0.3, 0.12, 0.03), new T.MeshStandardMaterial({ color: 0x111113, roughness: 0.35, metalness: 0.3 })); chip.position.set(-1.6, 0.6, 0.2); pcb.add(chip);
-    const mem = new T.Mesh(keyGeometry(2.6, 1.3, 0.22, 0.08, 0.02), new T.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4 })); mem.position.set(2.2, 0.9, 0.16); pcb.add(mem);
-    const glow = new T.Mesh(new T.PlaneGeometry(5, 5), new T.MeshBasicMaterial({ map: glowTex('rgba(127,180,255,'), transparent: true, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false }));
-    glow.position.set(-1.6, 0.6, 0.4); pcb.add(glow); pcb.userData.glow = glow;
-    for (let i = 0; i < 18; i++) { const tr = new T.Mesh(new T.BoxGeometry(0.05, 2 + Math.random() * 3, 0.02), new T.MeshStandardMaterial({ color: 0xc9a75a, metalness: 1, roughness: 0.3 })); tr.position.set(-5.5 + i * 0.62, -2.3, 0.08); pcb.add(tr); }
+  {
+    const SWs = 16 * MM, SHs = 134 * MM, gap = 0.6 * MM;
+    const strip = new T.Group(); dev.add(strip); keys.push(strip);
+    const stripMat = new T.MeshPhysicalMaterial({ color: 0xcfc9bd, metalness: 0.75, roughness: 0.38, clearcoat: 0.2 });
+    const dotMat = new T.MeshBasicMaterial({ color: 0x55534f });
+    const base = new T.Mesh(keyGeometry(SWs - 0.04, SHs - 0.04, BD * 0.55, 0.03, 0.01), backMat); base.position.z = -BD * 0.35; strip.add(base);
+    const kh = (SHs - gap) / 2;
+    [1, -1].forEach((k) => {
+      const y = k * (kh / 2 + gap / 2);
+      const key = new T.Mesh(keyGeometry(SWs, kh, BD * 0.45, 0.035, 0.012), stripMat); key.position.set(0, y, 0); strip.add(key);
+      [kh / 4, -kh / 4].forEach((dy) => [-1.4, 0, 1.4].forEach((dx) => { const d = new T.Mesh(new T.CircleGeometry(0.55 * MM, 10), dotMat); d.position.set(dx * MM, y + dy, 0.002); strip.add(d); }));
+    });
+    strip.position.set(BX + BW / 2 + SWs / 2 + 0.2 * MM, (11.2 - 15.7) / 2 * MM, -0.6 * MM);
+    strip.userData.z0 = strip.position.z;
   }
-  pcb.visible = false;
   function glowTex(rgba) {
     const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
     const g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, rgba + '0.9)'); g.addColorStop(0.4, rgba + '0.3)'); g.addColorStop(1, rgba + '0)');
@@ -276,7 +324,7 @@
     { mode: 'network', ry: -18, rx: -6, zoom: 0.9, explode: 0, phone: 0, net: 1 },
     { mode: 'intercom', ry: -10, rx: -2, zoom: 1.08, explode: 0, phone: 0, net: 0, demo: 'intercom' },
     { mode: 'dash', ry: -24, rx: -4, zoom: 0.82, explode: 0, phone: 1, net: 0, demo: 'dash' },
-    { mode: 'dash', ry: -42, rx: -12, zoom: 0.8, explode: 1, phone: 0, net: 0 },
+    { mode: 'system', ry: -38, rx: -6, zoom: 0.92, explode: 0, phone: 0, net: 0 },
   ];
 
   /* ---------------- layout ---------------- */
@@ -335,8 +383,20 @@
     hoverHit = scr.hits.find((z) => px >= z.r[0] && px <= z.r[0] + z.r[2] && py >= z.r[1] && py <= z.r[1] + z.r[3]) || null;
     return hoverHit;
   }
-  addEventListener('click', (e) => {
+  // taps work the same with a mouse, a finger (iPad / phone) or a pen: a short press that does not move
+  function onTap(handler) {
+    let st = null;
+    addEventListener('pointerdown', (e) => { st = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
+    addEventListener('pointercancel', () => { st = null; }, { passive: true });
+    addEventListener('pointerup', (e) => {
+      if (!st) return; const dx = e.clientX - st.x, dy = e.clientY - st.y, dt = performance.now() - st.t; st = null;
+      if (dx * dx + dy * dy > 144 || dt > 700) return;
+      handler(e);
+    });
+  }
+  onTap((e) => {
     if (e.target.closest('a,button')) return;
+    ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1);
     const h = pick(); if (!h) return;
     h.fn(); dirty = true; tick();
     syncRoom();
@@ -395,17 +455,11 @@
     if (now - lastDraw > 90 || dirty) { drawScreen(t); lastDraw = now; dirty = false; if (mode === 'try') syncRoom(); }
 
     const Hv = VH(), Wv = Hv * camera.aspect;
-    const W = PW + st.phone * 7 + st.net * 9, H = PH + st.net * 4 + st.explode * 2;
+    const W = PW + st.phone * 7 + st.net * 9, H = PH + st.net * 4;
     const k = Math.min((st.fw * Wv) / W, (st.fh * Hv) / H) * st.zoom;
     root.scale.setScalar(k);
     root.position.set(st.x * Wv / 2 - st.phone * 2.6 * k, st.y * Hv / 2 + Math.sin(t * 0.8) * 0.1 * k, 0);
     root.rotation.set(D2R(st.rx), D2R(st.ry + (mode === 'hero' ? Math.sin(t * 0.4) * 8 : 0)), 0);
-    // exploded hardware: glass forward, board out, housing back
-    const e = ez(clamp(st.explode, 0, 1));
-    glass.position.z = e * 4.5; screen.position.z = 0.075 + e * 4.5;
-    pcb.visible = e > 0.02; pcb.position.z = e * 1.6; pcb.position.x = -(PW - 13.2) / 2;
-    pcb.userData.glow.material.opacity = e * (0.6 + 0.4 * Math.sin(t * 3));
-    housing.position.z = -0.02 - e * 2.5; keys.forEach((kk) => (kk.position.z = 0.1 - e * 2.5));
     // phone
     ph.visible = st.phone > 0.02;
     ph.position.set(PW / 2 + 3.4 + (1 - st.phone) * 10, -1.2, 2.5); ph.rotation.y = 0.35 - (1 - st.phone) * 0.6;

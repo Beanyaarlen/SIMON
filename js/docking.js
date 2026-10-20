@@ -46,8 +46,10 @@
     steel: new T.MeshStandardMaterial({ color: 0xb8bcc2, metalness: 0.9, roughness: 0.35 }),
     box: new T.MeshStandardMaterial({ color: 0x5a5d62, roughness: 0.75 }),
     emit: new T.MeshBasicMaterial({ color: 0xfff1dc, toneMapped: false }),
+    cup: new T.MeshStandardMaterial({ color: 0x2a2a2c, roughness: 0.7, side: T.DoubleSide }),
+    icon: new T.MeshBasicMaterial({ color: 0x8a8a8a, side: T.DoubleSide }),
   };
-  const solidMats = [M.finish, M.acc, M.dark, M.gold, M.steel, M.box, M.emit];
+  const solidMats = [M.finish, M.acc, M.dark, M.gold, M.steel, M.box, M.emit, M.cup, M.icon];
   solidMats.forEach((m) => { m.transparent = true; });
 
   /* every visible solid also gets a blueprint twin: dark fill + white edges */
@@ -67,48 +69,63 @@
     return g;
   }
 
-  /* ---------------- the dock ---------------- */
-  const P = 8.6, HOLE = 2.75;
+  /* ---------------- the dock ----------------
+     Sizes follow the Simon catalogue (1 unit = 10 mm):
+     86 × 86 docking socket module, Ø33 mm socket with 4 gold pins,
+     round reset button bottom-left; kits are round pucks Ø ~76 mm. */
+  const P = 8.6, HOLE = 1.68, PINX = [-0.84, -0.28, 0.28, 0.84];
   const root = new T.Group(); scene.add(root);
   const dock = new T.Group(); root.add(dock);
   const layers = { plate: new T.Group(), cup: new T.Group(), pins: new T.Group(), box: new T.Group() };
   Object.values(layers).forEach((l) => dock.add(l));
+  const circle = (r) => { const s = new T.Shape(); s.absarc(0, 0, r, 0, Math.PI * 2, false); return s; };
+  // rounded puck: extruded circle with a soft bevel, front face at z = z0 + d
+  function puck(r, d, bev, z0) {
+    const g = new T.ExtrudeGeometry(circle(r - bev), { depth: Math.max(0.01, d - 2 * bev), bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 5, curveSegments: 72 });
+    g.translate(0, 0, z0 + bev); return g;
+  }
   {
-    const sh = rrect(P, P, 0.3);
+    // face plate with the round socket opening
+    const sh = rrect(P - 0.1, P - 0.1, 0.12);
     const hole = new T.Path(); hole.absarc(0, 0, HOLE, 0, Math.PI * 2, true); sh.holes.push(hole);
-    const geo = new T.ExtrudeGeometry(sh, { depth: 0.3, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05, bevelSegments: 2, curveSegments: 48 });
-    geo.translate(0, 0, -0.4);
+    const geo = new T.ExtrudeGeometry(sh, { depth: 0.26, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 2, curveSegments: 64 });
+    geo.translate(0, 0, -0.36);
     part(geo, M.finish, 'plate', layers.plate);
-    const btn = new T.CylinderGeometry(0.32, 0.32, 0.08, 28); btn.rotateX(Math.PI / 2); btn.translate(-P / 2 + 0.75, -P / 2 + 0.75, 0.04);
+    // slim raised i7 frame lip around the face
+    const lip = rrect(P, P, 0.14); lip.holes.push(rrect(P - 0.36, P - 0.36, 0.06, 0, 0, T.Path));
+    const lg = new T.ExtrudeGeometry(lip, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 6 });
+    lg.translate(0, 0, -0.11);
+    part(lg, M.finish, 'plate', layers.plate);
+    // small key notch on the right edge of the opening
+    const notch = new T.BoxGeometry(0.16, 0.42, 0.3); notch.translate(HOLE + 0.02, 0, -0.2); part(notch, M.dark, 'plate', layers.plate);
+    // round reset button, bottom-left
+    const btn = new T.CylinderGeometry(0.33, 0.35, 0.12, 32); btn.rotateX(Math.PI / 2); btn.translate(-P / 2 + 1.2, -P / 2 + 1.2, -0.02);
     part(btn, M.finish, 'plate', layers.plate);
-    const ring = new T.TorusGeometry(HOLE + 0.02, 0.05, 8, 64); part(ring, M.finish, 'plate', layers.plate);
     // socket cup
-    const cup = new T.CylinderGeometry(HOLE - 0.02, HOLE - 0.02, 1.0, 32, 1, true); cup.rotateX(Math.PI / 2); cup.translate(0, 0, -0.5);
-    part(cup, M.dark, 'cup', layers.cup, { side: T.DoubleSide, edge: 8 });
-    const back = new T.CircleGeometry(HOLE - 0.02, 64); back.translate(0, 0, -0.98);
-    part(back, M.dark, 'cup', layers.cup);
-    // contact pins
-    [-0.66, -0.22, 0.22, 0.66].forEach((x) => {
-      const pin = new T.CylinderGeometry(0.13, 0.13, 0.4, 20); pin.rotateX(Math.PI / 2); pin.translate(x, 0.35, -0.78);
+    const cup = new T.CylinderGeometry(HOLE - 0.02, HOLE - 0.02, 1.0, 48, 1, true); cup.rotateX(Math.PI / 2); cup.translate(0, 0, -0.6);
+    part(cup, M.cup, 'cup', layers.cup, { side: T.DoubleSide, edge: 8 });
+    const back = new T.CircleGeometry(HOLE - 0.02, 64); back.translate(0, 0, -1.08);
+    part(back, M.cup, 'cup', layers.cup);
+    // four gold contact pins on a pill-shaped pad
+    const pad = keyGeometry(2.25, 0.62, 0.1, 0.3, 0.02); pad.translate(0, 0, -0.96);
+    part(pad, M.dark, 'pins', layers.pins);
+    PINX.forEach((x) => {
+      const pin = new T.CylinderGeometry(0.12, 0.12, 0.22, 20); pin.rotateX(Math.PI / 2); pin.translate(x, 0, -0.93);
       part(pin, M.gold, 'pins', layers.pins);
     });
-    const pcb = keyGeometry(2.6, 1.0, 0.12, 0.2, 0.02); pcb.translate(0, 0.35, -0.86);
-    part(pcb, M.dark, 'pins', layers.pins);
-    // flush mounting box
-    const bw = 7.6, bd = 4.2;
-    const bx = new T.Group();
-    const wall = (w, h, d, x, y, z) => { const gg = new T.BoxGeometry(w, h, d); gg.translate(x, y, z); part(gg, M.box, 'box', layers.box); };
+    // flush mounting box (72 × 72 mm)
+    const bw = 7.2, bd = 4.2;
+    const wall = (w, h, d, x, y, z) => { const gg = new T.BoxGeometry(w, h, d); gg.translate(x, y, z - 0.5); part(gg, M.box, 'box', layers.box); };
     wall(bw, bw, 0.2, 0, 0, -bd);
     wall(bw, 0.2, bd, 0, bw / 2, -bd / 2); wall(bw, 0.2, bd, 0, -bw / 2, -bd / 2);
     wall(0.2, bw, bd, bw / 2, 0, -bd / 2); wall(0.2, bw, bd, -bw / 2, 0, -bd / 2);
-    layers.box.add(bx);
   }
 
-  /* ---------------- accessories (each plugs into the cup) ---------------- */
+  /* ---------------- accessories (each plugs into the socket) ---------------- */
   function plug(parent) {
-    const g = new T.CylinderGeometry(HOLE - 0.12, HOLE - 0.12, 0.75, 32); g.rotateX(Math.PI / 2); g.translate(0, 0, -0.42);
+    const g = new T.CylinderGeometry(HOLE - 0.1, HOLE - 0.1, 0.95, 48); g.rotateX(Math.PI / 2); g.translate(0, 0, -0.5);
     part(g, M.acc, 'plug', parent, { edge: 8 });
-    [-0.66, -0.22, 0.22, 0.66].forEach((x) => { const c = new T.CircleGeometry(0.11, 16); c.rotateY(Math.PI); c.translate(x, 0.35, -0.8); part(c, M.gold, 'plug', parent); });
+    PINX.forEach((x) => { const c = new T.CircleGeometry(0.11, 16); c.rotateY(Math.PI); c.translate(x, 0, -0.98); part(c, M.gold, 'plug', parent); });
   }
   function glowTex(inner, outer) {
     const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
@@ -116,45 +133,58 @@
     g.addColorStop(0, 'rgba(255,214,160,0.95)'); g.addColorStop(0.4, 'rgba(255,178,94,0.35)'); g.addColorStop(1, 'rgba(255,178,94,0)');
     x.fillStyle = g; x.fillRect(0, 0, 256, 256); return new T.CanvasTexture(c);
   }
+  const ringIcon = (r) => new T.RingGeometry(r * 0.72, r, 40);
   const KITS = {};
-  // Reading lamp kit — fully rotating head, warm, dimmable (5W 3000K)
+  // Reading lamp kit — round base, ball joint, long cylinder head (5W 3000K)
   {
     const g = new T.Group(); plug(g);
-    const face = new T.CylinderGeometry(HOLE - 0.05, HOLE + 0.05, 0.45, 56); face.rotateX(Math.PI / 2); face.translate(0, 0, 0.22);
-    part(face, M.acc, 'body', g);
-    const knuckle = new T.SphereGeometry(0.75, 16, 10); knuckle.translate(0, 0, 0.75); part(knuckle, M.acc, 'body', g, { edge: 10 });
-    const head = new T.Group(); head.position.set(0, 0, 0.9); g.add(head);
-    const arm = new T.CylinderGeometry(1.05, 1.15, 4.6, 24); arm.rotateZ(Math.PI / 2); arm.translate(2.3, 0, 0.45);
+    part(puck(1.9, 0.42, 0.1, 0.0), M.acc, 'body', g, { edge: 10 });
+    const neck = new T.CylinderGeometry(0.5, 0.58, 0.6, 32); neck.rotateX(Math.PI / 2); neck.translate(0, 0, 0.7);
+    part(neck, M.acc, 'body', g, { edge: 10 });
+    const knuckle = new T.SphereGeometry(0.62, 24, 14); knuckle.translate(0, 0, 1.12); part(knuckle, M.acc, 'body', g, { edge: 10 });
+    const head = new T.Group(); head.position.set(0, 0, 1.12); g.add(head);
+    const HR = 1.45, HL = 7.2, HX = -1.3, HZ = 0.62 + HR - 0.25;
+    const arm = new T.CylinderGeometry(HR, HR, HL - 0.5, 48); arm.rotateZ(Math.PI / 2); arm.translate(HX + (HL - 0.5) / 2, 0, HZ);
     part(arm, M.acc, 'head', head, { edge: 10 });
-    const cap = new T.CircleGeometry(1.0, 40); cap.rotateY(Math.PI / 2); cap.translate(4.61, 0, 0.45);
+    const shell = new T.CylinderGeometry(HR, HR, 0.5, 48, 1, true); shell.rotateZ(Math.PI / 2); shell.translate(HX + HL - 0.25, 0, HZ);
+    part(shell, M.acc, 'head', head, { side: T.DoubleSide, edge: 8 });
+    const lipR = new T.RingGeometry(HR - 0.12, HR, 48); lipR.rotateY(Math.PI / 2); lipR.translate(HX + HL, 0, HZ);
+    part(lipR, M.acc, 'head', head, { side: T.DoubleSide, edge: 8 });
+    // recessed light opening at the far end
+    const rim = new T.CylinderGeometry(HR - 0.12, HR - 0.12, 0.5, 48, 1, true); rim.rotateZ(Math.PI / 2); rim.translate(HX + HL - 0.24, 0, HZ);
+    part(rim, M.dark, 'head', head, { side: T.DoubleSide, edge: 8 });
+    const cap = new T.CircleGeometry(HR - 0.14, 48); cap.rotateY(Math.PI / 2); cap.translate(HX + HL - 0.46, 0, HZ);
     const em = new T.Mesh(cap, M.emit); head.add(em);
+    const btn = ringIcon(0.16); btn.translate(HX + 0.9, 0, 0); btn.rotateX(0); const bm = new T.Mesh(btn, M.icon); bm.position.set(0, 0, HZ + HR + 0.004); head.add(bm);
     const cone = new T.Mesh(new T.ConeGeometry(2.6, 7, 48, 1, true), new T.MeshBasicMaterial({ color: 0xffc27a, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide, toneMapped: false }));
-    cone.rotation.z = Math.PI / 2; cone.position.set(4.6 + 3.5, 0, 0.45); head.add(cone);
+    cone.rotation.z = Math.PI / 2; cone.position.set(HX + HL + 3.4, 0, HZ); head.add(cone);
     KITS.lamp = { g, head, em, beam: cone, name: 'Reading Lamp Kit' };
   }
-  // Wall light kit — 355° rotation, warm, dimmable (3W 3000K)
+  // Wall light kit — round puck; the lower half of the face is a flap hinged across the middle.
+  // When the light is on the flap tilts open and warm light spills out of the wedge onto the wall.
+  // The whole kit turns 355° to aim the light (3W 3000K).
   {
     const g = new T.Group(); plug(g);
-    const disc = new T.CylinderGeometry(HOLE + 0.25, HOLE + 0.35, 0.7, 36); disc.rotateX(Math.PI / 2); disc.translate(0, 0, 0.35);
-    part(disc, M.acc, 'body', g, { edge: 8 });
-    const dome = new T.SphereGeometry(HOLE + 0.25, 36, 4, 0, Math.PI * 2, 0, 0.42); dome.rotateX(Math.PI / 2); dome.translate(0, 0, 0.7 - (HOLE + 0.25) * Math.cos(0.42));
+    const R = 3.8, Z0 = 0.66, HT = 0.22;            // base front at Z0, half-plates HT thick
     const rot = new T.Group(); g.add(rot);
-    part(dome, M.acc, 'face', rot, { edge: 6 });
-    const dot = new T.CircleGeometry(0.12, 16); dot.translate(0, HOLE - 0.55, 1.1); part(dot, M.dark, 'face', rot);
-    const slot = new T.Mesh(new T.PlaneGeometry(3.6, 0.16), M.emit); slot.position.set(0, -(HOLE + 0.36), 0.35); slot.rotation.x = Math.PI / 2; g.add(slot);
-    const wash = new T.Mesh(new T.PlaneGeometry(12, 12), new T.MeshBasicMaterial({ map: glowTex(0, 128), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false }));
-    wash.position.set(0, -4.6, -0.3); wash.scale.set(0.9, 1.2, 1); g.add(wash);
-    KITS.wall = { g, rot, em: slot, beam: wash, name: 'Wall Light Kit' };
-  }
-  // Type A+C double USB outlet kit
-  {
-    const g = new T.Group(); plug(g);
-    const face = new T.CylinderGeometry(HOLE - 0.05, HOLE + 0.05, 0.4, 56); face.rotateX(Math.PI / 2); face.translate(0, 0, 0.2);
-    part(face, M.acc, 'body', g);
-    const a = keyGeometry(1.5, 0.62, 0.3, 0.06, 0.02); a.translate(0, 0.62, 0.43); part(a, M.dark, 'ports', g);
-    const at = keyGeometry(1.2, 0.18, 0.1, 0.04, 0.01); at.translate(0, 0.72, 0.46); part(at, M.steel, 'ports', g);
-    const c = keyGeometry(1.0, 0.36, 0.3, 0.17, 0.02); c.translate(0, -0.55, 0.43); part(c, M.dark, 'ports', g);
-    KITS.usb = { g, name: 'Type A+C USB Kit' };
+    part(puck(R, Z0, 0.14, 0.0), M.acc, 'body', rot, { edge: 6 });
+    const half = (lower) => {
+      const sh = new T.Shape(); sh.moveTo(-(R - 0.12), 0); sh.absarc(0, 0, R - 0.12, Math.PI, lower ? Math.PI * 2 : 0, !lower); sh.lineTo(-(R - 0.12), 0);
+      return new T.ExtrudeGeometry(sh, { depth: HT - 0.06, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 3, curveSegments: 48 });
+    };
+    // fixed upper half with the indicator ring
+    const up = half(false); up.translate(0, 0.025, Z0 + 0.03); part(up, M.acc, 'face', rot, { edge: 6 });
+    const ic = new T.Mesh(ringIcon(0.2), M.icon); ic.position.set(0, R * 0.52, Z0 + HT + 0.004); rot.add(ic);
+    // glowing bed under the flap
+    const bedSh = new T.Shape(); bedSh.moveTo(-(R - 0.3), 0); bedSh.absarc(0, 0, R - 0.3, Math.PI, Math.PI * 2, false); bedSh.lineTo(-(R - 0.3), 0);
+    const bed = new T.Mesh(new T.ShapeGeometry(bedSh, 40), M.emit); bed.position.set(0, -0.03, Z0 + 0.004); rot.add(bed);
+    // hinged flap (lower half)
+    const flap = new T.Group(); flap.position.set(0, -0.025, Z0); rot.add(flap);
+    const fg = half(true); fg.translate(0, 0, 0.03); part(fg, M.acc, 'face', flap, { edge: 6 });
+    const under = new T.Mesh(new T.ShapeGeometry(bedSh, 40), M.emit); under.rotation.y = Math.PI; under.position.z = 0.01; flap.add(under);
+    const wash = new T.Mesh(new T.PlaneGeometry(13, 13), new T.MeshBasicMaterial({ map: glowTex(0, 128), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false }));
+    wash.position.set(0, -5.4, -0.3); wash.scale.set(1.0, 1.2, 1); rot.add(wash);
+    KITS.wall = { g, rot, flap, open: 0, em: bed, em2: under, beam: wash, name: 'Wall Light Kit' };
   }
   Object.values(KITS).forEach((k) => { root.add(k.g); k.pres = 0; k.g.visible = false; });
 
@@ -164,7 +194,6 @@
     { word: 'CONNECT', kit: 'lamp', explode: 0, out: 0.7, hi: ['plug'], ry: -46, rx: -14, wire: 1 },
     { word: 'READ', kit: 'lamp', explode: 0, out: 0, hi: ['head'], ry: -28, rx: -10, wire: 1, light: 1, swing: 1 },
     { word: 'GLOW', kit: 'wall', explode: 0, out: 0, hi: ['face'], ry: -24, rx: -8, wire: 1, light: 1, spin: 1 },
-    { word: 'CHARGE', kit: 'usb', explode: 0, out: 0, hi: ['ports'], ry: -30, rx: -10, wire: 1 },
     { word: 'CUSTOMIZE', kit: 'lamp', explode: 0, out: 0, hi: [], ry: -26, rx: -8, wire: 0, light: 1, colors: 1 },
   ];
   const sel = { kit: 'wall', fin: 0, light: true };
@@ -209,7 +238,7 @@
       stepIdx = s > 0.5 ? Math.min(N - 1, i + 1) : i; stepBlend = s;
       const S = STEPS[stepIdx];
       kit = S.kit; hi = S.hi;
-      if (S.colors) { const fi = Math.floor(t / 1.5) % FIN.length; finishTo(fi); kit = ['lamp', 'wall', 'usb'][Math.floor(t / 4.5) % 3]; }
+      if (S.colors) { const fi = Math.floor(t / 1.5) % FIN.length; finishTo(fi); kit = ['lamp', 'wall'][Math.floor(t / 4.5) % 2]; }
     } else if (mode === 'config') {
       tgt.light = sel.light ? 1 : 0; kit = sel.kit;
     }
@@ -226,8 +255,25 @@
   const ray = new T.Raycaster(), ndc = new T.Vector2(-9, -9);
   addEventListener('pointermove', (e) => ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1), { passive: true });
   let hovering = false;
-  addEventListener('click', (e) => {
-    if (!hovering || e.target.closest('a,button')) return;
+  // taps work the same with a mouse, a finger (iPad / phone) or a pen: a short press that does not move
+  function onTap(handler) {
+    let st = null;
+    addEventListener('pointerdown', (e) => { st = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
+    addEventListener('pointercancel', () => { st = null; }, { passive: true });
+    addEventListener('pointerup', (e) => {
+      if (!st) return; const dx = e.clientX - st.x, dy = e.clientY - st.y, dt = performance.now() - st.t; st = null;
+      if (dx * dx + dy * dy > 144 || dt > 700) return;
+      handler(e);
+    });
+  }
+  onTap((e) => {
+    if (e.target.closest('a,button')) return;
+    if (e.pointerType !== 'mouse') {
+      if (mode !== 'config' || !renderer) return;
+      ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1);
+      ray.setFromCamera(ndc, camera); hovering = ray.intersectObject(root, true).length > 0;
+    }
+    if (!hovering) return;
     sel.light = !sel.light; refreshUI();
   });
   $$('[data-kit]').forEach((b) => b.addEventListener('click', () => { sel.kit = b.dataset.kit; sel.light = true; refreshUI(); }));
@@ -237,7 +283,7 @@
     sw.innerHTML = FIN.map((f, i) => `<button class="sw${i === sel.fin ? ' on' : ''}" style="--c:${f[1]}" data-fin="${i}" aria-label="${f[0]}" aria-pressed="${i === sel.fin}"></button>`).join('');
     $$('[data-fin]', sw).forEach((b) => b.addEventListener('click', () => { sel.fin = +b.dataset.fin; refreshUI(); }));
     $('#dockFinName').textContent = FIN[sel.fin][0];
-    $('#dockLight').textContent = sel.kit === 'usb' ? 'Charging ready' : sel.light ? 'Light on — tap the dock to switch off' : 'Light off — tap the dock to switch on';
+    $('#dockLight').textContent = sel.light ? 'Light on — tap the dock to switch off' : 'Light off — tap the dock to switch on';
   }
   refreshUI();
 
@@ -310,6 +356,8 @@
       const on = st.light * K.pres;
       if (K.beam) K.beam.material.opacity = (kk === 'lamp' ? 0.16 : 0.85) * on * (1 - st.out);
       if (K.em) K.em.material = on > 0.05 ? M.emit : M.dark;
+      if (K.em2) K.em2.material = K.em.material;
+      if (K.flap) { K.open = damp(K.open, on > 0.05 ? 1 : 0, SNAP ? 1 : Math.min(1, dt * 5)); K.flap.rotation.x = -T.MathUtils.degToRad(26) * K.open; }
       if (kk === 'lamp') { K.head.rotation.y = -0.55 + (st.swing ? Math.sin(t * 0.9) * 0.55 : 0); K.head.rotation.z = -0.45 + (st.swing ? Math.sin(t * 0.6) * 0.25 : 0); }
       if (kk === 'wall') K.rot.rotation.z = st.spin ? (t * 0.9) % (Math.PI * 2) * (355 / 360) : 0;
     }
@@ -321,6 +369,7 @@
     // finish colour
     M.finish.color.lerp(colTarget, Math.min(1, dt * 6));
     M.acc.color.lerp(colTarget, Math.min(1, dt * 6));
+    { const c = M.acc.color, lum = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b; M.icon.color.setScalar(lum > 0.45 ? 0.45 : 0.82); M.cup.color.setScalar(lum > 0.45 ? 0.62 : 0.1); }
 
     // solid ↔ blueprint
     const w = clamp(st.wire, 0, 1);

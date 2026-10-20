@@ -268,10 +268,25 @@
     mouse.x = ndc.x; mouse.y = ndc.y;
   }, { passive: true });
   addEventListener('pointerleave', () => ndc.set(-9, -9));
-  addEventListener('click', (e) => {
-    if (!main || hoverKey < 0) return;
-    if (e.target.closest('a, button, .card, .nav')) return;
+  // taps work the same with a mouse, a finger (iPad / phone) or a pen: a short press that does not move
+  function onTap(handler) {
+    let st = null;
+    addEventListener('pointerdown', (e) => { st = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
+    addEventListener('pointercancel', () => { st = null; }, { passive: true });
+    addEventListener('pointerup', (e) => {
+      if (!st) return; const dx = e.clientX - st.x, dy = e.clientY - st.y, dt = performance.now() - st.t; st = null;
+      if (dx * dx + dy * dy > 144 || dt > 700) return;
+      handler(e);
+    });
+  }
+  let lastSt = null, lastOp = 0;
+  onTap((e) => {
+    if (!main || e.target.closest('a, button, .card, .nav')) return;
+    ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1);
+    if (lastSt && lastOp > 0.4) updateHover(lastSt);
+    if (hoverKey < 0) return;
     main.press(hoverKey); clickSound(); lastUserPress = performance.now();
+    if (e.pointerType !== 'mouse') { ndc.set(-9, -9); document.documentElement.style.cursor = ''; }
   });
   function updateHover(st) {
     hoverKey = -1;
@@ -303,16 +318,35 @@
     const docH = document.documentElement.scrollHeight - vh;
     progressBar.style.transform = `scaleX(${clamp(y / docH, 0, 1)})`;
 
-    // step-in reveals inside pinned sections (reversible)
+    // pinned sections: text is scrubbed by the scroll itself (exact timing, fully reversible)
     $$('.pin').forEach((sec) => {
       const id = sec.dataset.sec; if (!SEC[id]) return;
       const p = progressOf(id, y);
       sec._p = p;
-      $$('.step-in', sec).forEach((el) => el.classList.toggle('on', p >= parseFloat(el.dataset.in || 0) - 0.001 && p < 1.25));
+      if (p < -0.6 || p > 1.6) return;
+      const fp = clamp((0.2 * vh) / SEC[id].range, 0.025, 0.16); // fade length ≈ 20% of a screen of scrolling
+      $$('.step-in', sec).forEach((el) => {
+        const a = parseFloat(el.dataset.in || 0);
+        const o = a <= 0.001 ? 1 : smooth(clamp((p - a + fp * 0.5) / fp, 0, 1));
+        el.classList.add('scrubbed'); el.classList.toggle('on', o > 0.5);
+        el.style.opacity = o.toFixed(3);
+        el.style.transform = el.classList.contains('rev-line') ? `scaleX(${o.toFixed(3)})` : `translate3d(0,${((1 - o) * 18).toFixed(1)}px,0)`;
+      });
       $$('[data-steps]', sec).forEach((wrap) => {
         const th = wrap.dataset.steps.split(',').map(Number);
         let idx = 0; th.forEach((v, i) => { if (p >= v) idx = i; });
-        $$('.step', wrap).forEach((s, i) => { s.classList.toggle('on', i === idx); s.classList.toggle('past', i < idx); });
+        const steps = $$('.step', wrap);
+        const scrub = wrap.classList.contains('steps');
+        if (scrub) wrap.classList.add('scrub');
+        steps.forEach((s, i) => {
+          s.classList.toggle('on', i === idx); s.classList.toggle('past', i < idx);
+          if (!scrub) return;
+          const start = th[i], end = i < th.length - 1 ? th[i + 1] : Infinity;
+          const oi = i === 0 ? 1 : smooth(clamp((p - start) / fp, 0, 1));
+          const oo = end === Infinity ? 1 : 1 - smooth(clamp((p - (end - fp)) / fp, 0, 1));
+          s.style.setProperty('--o', (oi * oo).toFixed(3));
+          s.style.setProperty('--sy', ((1 - oi) * 22 - (1 - oo) * 22).toFixed(1) + 'px');
+        });
         $$('.step-dots i', sec).forEach((d, i) => d.classList.toggle('on', i === idx));
         sec._step = idx;
       });
@@ -337,6 +371,14 @@
     sp.style.setProperty('--tint', FINISH[finish].hex);
     sp.classList.toggle('finale', p > 0.8);
     SEC.upgrade.el.classList.toggle('final', SEC.upgrade.el._p > 0.86);
+    // finale + upgrade end: scrubbed cross-fades (exactly on the scroll)
+    const fo = smooth(clamp((p - 0.78) / 0.05, 0, 1));
+    scrubEl($('.finale-head', sp), fo, `translate3d(0,${((1 - fo) * 18).toFixed(1)}px,0)`);
+    scrubEl($('.config', sp), 1 - fo, mobile ? `translate3d(0,${(fo * 30).toFixed(1)}px,0)` : `translate3d(${(fo * 40).toFixed(1)}px,0,0)`);
+    const upP = SEC.upgrade.el._p, ho = 1 - smooth(clamp((upP - 0.82) / 0.04, 0, 1)), fi = smooth(clamp((upP - 0.85) / 0.05, 0, 1));
+    scrubEl($('.up-head', SEC.upgrade.el), ho, `translate3d(0,${(-(1 - ho) * 20).toFixed(1)}px,0)`);
+    scrubEl($('.up-final', SEC.upgrade.el), fi, `translate3d(0,${((1 - fi) * 20).toFixed(1)}px,0)`);
+    updateBackdrop(y);
 
     // lineup horizontal track
     const lu = SEC.lineup.el, track = $('.track', lu);
@@ -366,8 +408,38 @@
     navLinks.forEach((a) => a.classList.toggle('active', a === cur));
   }
 
-  /* reveal for normal sections */
-  const io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: 0.18 });
+  function scrubEl(el, o, tf) {
+    if (!el) return;
+    el.classList.add('scrubbed');
+    el.style.opacity = o.toFixed(3); el.style.transform = tf;
+    el.style.pointerEvents = o < 0.5 ? 'none' : '';
+  }
+
+  /* one continuous backdrop: each section "owns" a layer; layers cross-fade by how much of
+     the screen each section fills, so there are no hard background edges between sections */
+  const BD_MAP = { hero: ['ribbon', 1], hello: ['wave', 1], anatomy: ['studio', 1], language: ['ribbon2', 1], control: ['wave2', 0.6], revolution: ['wave2', 1], space: ['ribbon', 1], gallery: ['interior', 0.55], upgrade: ['interior', 1], cta: ['wave', 1] };
+  const bdLayers = {}; $$('#backdrop .bd').forEach((el) => (bdLayers[el.dataset.bd] = el));
+  const bdRoot = $('#backdrop'), bdVig = $('#backdrop .bd-vignette'), bdFloor = $('#backdrop .bd-floor');
+  function updateBackdrop(y) {
+    if (!bdRoot) return;
+    const acc = {}; Object.keys(bdLayers).forEach((k) => (acc[k] = 0));
+    let heroW = 0;
+    for (const id in SEC) {
+      const s = SEC[id], ov = Math.max(0, Math.min(s.top + s.h, y + vh) - Math.max(s.top, y)) / vh;
+      if (id === 'hero') heroW = ov;
+      const m = BD_MAP[id]; if (m && ov > 0) acc[m[0]] += ov * m[1];
+    }
+    for (const k in bdLayers) bdLayers[k].style.opacity = Math.min(1, acc[k]).toFixed(3);
+    bdVig.style.opacity = (1 - 0.55 * heroW).toFixed(3);
+    const docH = document.documentElement.scrollHeight - vh;
+    bdRoot.style.setProperty('--drift', clamp(y / docH, 0, 1).toFixed(4));
+    // the floor spotlight belongs to the "Flush. Flat. Seamless." step only
+    const ap = SEC.anatomy.el._p || 0;
+    bdFloor.style.opacity = (0.85 * smooth(clamp((ap - 0.46) / 0.06, 0, 1)) * (1 - smooth(clamp((ap - 0.71) / 0.05, 0, 1)))).toFixed(3);
+  }
+
+  /* reveal for normal sections: start a little before the element reaches the screen */
+  const io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: 0.01, rootMargin: '0px 0px -6% 0px' });
   $$('.reveal').forEach((el) => io.observe(el));
 
   /* anchors */
@@ -489,7 +561,7 @@
     if (manual.gang && spP > -0.02 && spP < 1.3) target.layout = LAYOUT[manual.gang].slice();
     if (manual.color && spP > -0.02 && spP < 0.8) target.col = FINISH[manual.color].rgb.slice();
     if (state.x == null) damp(state, target, 1);
-    damp(state, target, SNAP ? 1 : 1 - Math.exp(-dt * (reduced ? 30 : 6.5)));
+    damp(state, target, SNAP ? 1 : 1 - Math.exp(-dt * (reduced ? 30 : 12)));
     // lift the switch out of the "Start simple" photo on its way to Upgrade Anytime
     let st = state, lockA = 0, opF = state.op == null ? 1 : state.op;
     const em = emergence(y);
@@ -570,6 +642,7 @@
     main.group.position.set(mx0 * st.lineup, my0 * st.lineup + (st.lineup > 0.01 ? Math.sin(t * 0.8 + 3) * 0.18 * st.lineup : 0), 0);
 
     root.updateMatrixWorld(true);
+    lastSt = st; lastOp = opOut;
     if (opOut > 0.4) updateHover(st); else { hoverKey = -1; document.documentElement.style.cursor = ''; }
     updateLabels(st);
     if (opOut > 0.004) renderer.render(scene, camera);
@@ -734,9 +807,9 @@
       $('#loader').classList.add('done');
       document.body.classList.add('ready');
       const o = { v: 0 };
-      if (window.gsap) gsap.to(o, { v: 1, duration: reduced ? 0.01 : 2.2, ease: 'power3.out', onUpdate: () => (intro = o.v) });
+      if (window.gsap) gsap.to(o, { v: 1, duration: reduced ? 0.01 : 1.5, ease: 'power3.out', onUpdate: () => (intro = o.v) });
       else intro = 1;
-      if (main) main.keys.forEach((kk, i) => setTimeout(() => { kk.on = true; }, (reduced ? 0 : 900) + i * 220));
+      if (main) main.keys.forEach((kk, i) => setTimeout(() => { kk.on = true; }, (reduced ? 0 : 450) + i * 120));
     }, 350);
   });
 })();
